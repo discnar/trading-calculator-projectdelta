@@ -89,6 +89,7 @@
             border-radius: 12px;
             text-align: center;
             cursor: pointer;
+            transition: 0.2s;
         }
         .modal-card:hover {
             background: #00ccff;
@@ -108,14 +109,12 @@
     <div class="header">PROJECT DELTA TRADE CALCULATOR</div>
 
     <div class="main">
-        <!-- TU DONNES -->
         <div class="panel">
             <h2>TU DONNES</h2>
             <div class="slots" id="leftSlots"></div>
             <h3 style="text-align:center; margin-top:15px;">Total : <span id="leftTotal">0</span> ₽</h3>
         </div>
 
-        <!-- ILS DONNENT -->
         <div class="panel">
             <h2>ILS DONNENT</h2>
             <div class="slots" id="rightSlots"></div>
@@ -125,7 +124,7 @@
 
     <div class="result" id="result">⚖️ FAIR TRADE</div>
 
-    <!-- MODAL RECHERCHE -->
+    <!-- MODAL -->
     <div class="modal" id="modal">
         <div class="modal-content">
             <h2 style="margin-bottom:15px;">Rechercher un item</h2>
@@ -177,7 +176,8 @@
 
         function openModal(side) {
             currentSide = side;
-            document.getElementById('modal').style.display = 'flex';
+            const modal = document.getElementById('modal');
+            modal.style.display = 'flex';
             document.getElementById('modalSearch').value = "";
             renderModalItems("");
         }
@@ -197,7 +197,12 @@
                 const card = document.createElement('div');
                 card.className = "modal-card";
                 card.innerHTML = `<strong>${name}</strong><br><small>${price.toLocaleString()} ₽</small>`;
-                card.onclick = () => { addItem(name); closeModal(); };
+                
+                // Correction importante ici
+                card.onclick = function() {
+                    addItem(name);
+                };
+                
                 container.appendChild(card);
             });
         }
@@ -205,8 +210,10 @@
         function addItem(name) {
             if (currentSide === 'left') leftItems.push(name);
             else rightItems.push(name);
+            
             renderAllSlots();
             updateTotals();
+            closeModal();   // <-- Fermeture garantie
         }
 
         function renderAllSlots() {
@@ -217,9 +224,18 @@
         function renderSide(containerId, itemsList) {
             const container = document.getElementById(containerId);
             const slots = container.children;
-            slots.forEach((slot, index) => {
-                if (index < itemsList.length) {
-                    const name = itemsList[index];
+            
+            // Réinitialise tous les slots
+            Array.from(slots).forEach(slot => {
+                slot.classList.remove('added');
+                slot.innerHTML = `<span style="font-size:35px;">+</span><small>Ajouter un élément</small>`;
+                slot.onclick = () => openModal(containerId === 'leftSlots' ? 'left' : 'right');
+            });
+
+            // Remplit les slots occupés
+            itemsList.forEach((name, index) => {
+                if (index < slots.length) {
+                    const slot = slots[index];
                     slot.classList.add('added');
                     slot.innerHTML = `<div class="name">${name}</div><div class="price">${itemsDB[name].toLocaleString()} ₽</div>`;
                     slot.onclick = null;
@@ -243,8 +259,10 @@
             else res.textContent = "⚖️ FAIR TRADE";
         }
 
-        // Recherche dans modal
-        document.getElementById('modalSearch').addEventListener('input', (e) => renderModalItems(e.target.value));
+        // Recherche
+        document.getElementById('modalSearch').addEventListener('input', (e) => {
+            renderModalItems(e.target.value);
+        });
 
         // Démarrage
         createSlots();
