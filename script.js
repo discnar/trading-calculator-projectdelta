@@ -2,22 +2,33 @@ let items = {};
 let leftItems = [];
 let rightItems = [];
 
-// LOAD JSON
+// DEBUG LOAD
 fetch("items.json")
-.then(r => r.json())
+.then(r => {
+    if(!r.ok){
+        throw new Error("items.json introuvable");
+    }
+    return r.json();
+})
 .then(data => {
     items = data;
+    console.log("ITEMS CHARGÉS:", items);
     renderAll();
+})
+.catch(err => {
+    console.error("ERREUR JSON:", err);
+    document.getElementById("result").innerText =
+    "❌ ERREUR: items.json ne se charge pas";
 });
 
-// SEARCH EVENT
+// SEARCH
 document.addEventListener("input", (e)=>{
     if(e.target.id === "search"){
         renderAll(e.target.value.toLowerCase());
     }
 });
 
-// GET ALL ITEMS
+// ALL ITEMS FLAT
 function getAllItems(){
     let list = [];
 
@@ -30,7 +41,7 @@ function getAllItems(){
     return list;
 }
 
-// RENDER ITEMS (IMPORTANT FIX)
+// RENDER
 function renderAll(filter=""){
 
     let left = document.getElementById("left");
@@ -41,6 +52,12 @@ function renderAll(filter=""){
 
     let all = getAllItems();
 
+    if(all.length === 0){
+        left.innerHTML = "❌ Aucun item chargé";
+        right.innerHTML = "❌ Aucun item chargé";
+        return;
+    }
+
     for(let name of all){
 
         if(!name.toLowerCase().includes(filter)) continue;
@@ -50,7 +67,7 @@ function renderAll(filter=""){
     }
 }
 
-// GET PRICE
+// PRICE
 function getPrice(name){
     for(let cat in items){
         if(items[cat][name]){
@@ -60,7 +77,7 @@ function getPrice(name){
     return 0;
 }
 
-// CREATE CARD (FIX BUTTON)
+// CARD
 function createCard(name, side){
 
     let price = getPrice(name);
@@ -70,25 +87,22 @@ function createCard(name, side){
 
     div.innerHTML = `
         <span>${name} — ${price.toLocaleString()} ₽</span>
-        <button onclick="addItem('${name}','${side}')">Ajouter</button>
+        <button onclick="addItem('${name}','${side}')">+</button>
     `;
 
     document.getElementById(side).appendChild(div);
 }
 
-// ADD ITEM
+// ADD
 function addItem(name, side){
 
-    if(side === "left"){
-        leftItems.push(name);
-    } else {
-        rightItems.push(name);
-    }
+    if(side === "left") leftItems.push(name);
+    else rightItems.push(name);
 
     update();
 }
 
-// CALC TOTAL
+// CALC
 function calc(list){
     let total = 0;
 
@@ -99,7 +113,7 @@ function calc(list){
     return total;
 }
 
-// UPDATE UI
+// UPDATE
 function update(){
 
     let left = calc(leftItems);
