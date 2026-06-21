@@ -40,10 +40,9 @@
             padding: 5px;
             text-align: center;
         }
-        .slot:hover { border-color: #00ccff; background: #2a2a2a; }
+        .slot:hover { border-color: #00ccff; }
         .slot.added {
-            border-style: solid;
-            border-color: #00ccff;
+            border: 2px solid #00ccff;
             background: #1f2a1f;
         }
         .slot .name { font-size: 13px; font-weight: bold; }
@@ -89,7 +88,6 @@
             border-radius: 12px;
             text-align: center;
             cursor: pointer;
-            transition: 0.2s;
         }
         .modal-card:hover {
             background: #00ccff;
@@ -176,8 +174,7 @@
 
         function openModal(side) {
             currentSide = side;
-            const modal = document.getElementById('modal');
-            modal.style.display = 'flex';
+            document.getElementById('modal').style.display = 'flex';
             document.getElementById('modalSearch').value = "";
             renderModalItems("");
         }
@@ -197,12 +194,7 @@
                 const card = document.createElement('div');
                 card.className = "modal-card";
                 card.innerHTML = `<strong>${name}</strong><br><small>${price.toLocaleString()} ₽</small>`;
-                
-                // Correction importante ici
-                card.onclick = function() {
-                    addItem(name);
-                };
-                
+                card.onclick = () => addItem(name);
                 container.appendChild(card);
             });
         }
@@ -210,37 +202,43 @@
         function addItem(name) {
             if (currentSide === 'left') leftItems.push(name);
             else rightItems.push(name);
-            
             renderAllSlots();
             updateTotals();
-            closeModal();   // <-- Fermeture garantie
+            closeModal();
         }
 
         function renderAllSlots() {
-            renderSide('leftSlots', leftItems);
-            renderSide('rightSlots', rightItems);
+            renderSide('leftSlots', leftItems, 'left');
+            renderSide('rightSlots', rightItems, 'right');
         }
 
-        function renderSide(containerId, itemsList) {
+        function renderSide(containerId, itemsList, side) {
             const container = document.getElementById(containerId);
             const slots = container.children;
-            
-            // Réinitialise tous les slots
-            Array.from(slots).forEach(slot => {
-                slot.classList.remove('added');
-                slot.innerHTML = `<span style="font-size:35px;">+</span><small>Ajouter un élément</small>`;
-                slot.onclick = () => openModal(containerId === 'leftSlots' ? 'left' : 'right');
-            });
 
-            // Remplit les slots occupés
-            itemsList.forEach((name, index) => {
-                if (index < slots.length) {
-                    const slot = slots[index];
+            // Réinitialiser tous les slots
+            Array.from(slots).forEach((slot, index) => {
+                if (index < itemsList.length) {
+                    const name = itemsList[index];
                     slot.classList.add('added');
-                    slot.innerHTML = `<div class="name">${name}</div><div class="price">${itemsDB[name].toLocaleString()} ₽</div>`;
-                    slot.onclick = null;
+                    slot.innerHTML = `
+                        <div class="name">${name}</div>
+                        <div class="price">${itemsDB[name].toLocaleString()} ₽</div>
+                    `;
+                    slot.onclick = () => removeItem(side, index);
+                } else {
+                    slot.classList.remove('added');
+                    slot.innerHTML = `<span style="font-size:35px;">+</span><small>Ajouter un élément</small>`;
+                    slot.onclick = () => openModal(side);
                 }
             });
+        }
+
+        function removeItem(side, index) {
+            if (side === 'left') leftItems.splice(index, 1);
+            else rightItems.splice(index, 1);
+            renderAllSlots();
+            updateTotals();
         }
 
         function updateTotals() {
@@ -259,12 +257,8 @@
             else res.textContent = "⚖️ FAIR TRADE";
         }
 
-        // Recherche
-        document.getElementById('modalSearch').addEventListener('input', (e) => {
-            renderModalItems(e.target.value);
-        });
+        document.getElementById('modalSearch').addEventListener('input', (e) => renderModalItems(e.target.value));
 
-        // Démarrage
         createSlots();
     </script>
 </body>
