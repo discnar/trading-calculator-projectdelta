@@ -29,7 +29,7 @@
             background: #1a1a1a;
             border-radius: 16px;
             padding: 20px;
-            width: 420px;
+            width: 440px;
         }
         .panel h2 { 
             color: #ff4444; 
@@ -53,54 +53,31 @@
             cursor: pointer;
             transition: 0.2s;
             font-size: 13px;
+            text-align: center;
         }
         .slot:hover { border-color: #00ccff; }
         .slot.added {
             border: 2px solid #00ccff;
             background: #1f2a1f;
         }
-        .slot .name { font-weight: bold; }
+        .slot .name { font-weight: bold; font-size: 13px; }
         .slot .price { color: #ffcc00; font-size: 12px; }
 
-        /* RESULTAT STYLE COMME TON IMAGE */
         .result-container {
             margin: 30px auto;
-            max-width: 420px;
+            max-width: 460px;
             padding: 25px;
             border-radius: 20px;
             text-align: center;
-            border: 3px solid;
+            border: 4px solid;
         }
-        .loss {
-            background: #2a0f0f;
-            border-color: #ff3333;
-        }
-        .win {
-            background: #0f2a0f;
-            border-color: #33ff33;
-        }
-        .fair {
-            background: #2a2a0f;
-            border-color: #ffcc33;
-        }
-        .result-icon {
-            font-size: 60px;
-            margin-bottom: 10px;
-        }
-        .result-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-        .diff-label {
-            font-size: 16px;
-            color: #ccc;
-        }
-        .diff-value {
-            font-size: 42px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
+        .loss { background: #2a0f0f; border-color: #ff3333; }
+        .win { background: #0f2a0f; border-color: #33ff33; }
+        .fair { background: #2a2a0f; border-color: #ffcc33; }
+        .result-icon { font-size: 70px; margin-bottom: 10px; }
+        .result-title { font-size: 26px; font-weight: bold; margin-bottom: 8px; }
+        .diff-label { font-size: 17px; color: #ccc; }
+        .diff-value { font-size: 48px; font-weight: bold; margin: 10px 0; }
 
         .modal {
             display: none;
@@ -126,10 +103,11 @@
             border: none;
             border-radius: 10px;
             color: white;
+            font-size: 16px;
         }
         .modal-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 12px;
             max-height: 65vh;
             overflow-y: auto;
@@ -140,10 +118,12 @@
             border-radius: 12px;
             text-align: center;
             cursor: pointer;
+            transition: 0.2s;
         }
         .modal-card:hover {
             background: #00ccff;
             color: black;
+            transform: scale(1.03);
         }
 
         button.reset {
@@ -176,16 +156,14 @@
         </div>
     </div>
 
-    <!-- RESULTAT STYLÉ -->
     <div id="resultContainer" class="result-container fair">
         <div id="resultIcon" class="result-icon">⚖️</div>
         <div id="resultTitle" class="result-title">ÉCHANGE ÉQUITABLE</div>
         <div class="diff-label">Différence :</div>
         <div id="diffValue" class="diff-value">0 $</div>
-        <button class="reset" onclick="resetAll()">🔄 Réinitialiser le calculateur</button>
+        <button class="reset" onclick="resetAll()">🔄 Réinitialiser</button>
     </div>
 
-    <!-- MODAL -->
     <div class="modal" id="modal">
         <div class="modal-content">
             <h2 style="margin-bottom:15px;">Rechercher un item</h2>
@@ -195,7 +173,8 @@
     </div>
 
     <script>
-        const itemsDB = { /* tous les items que tu avais */ 
+        const itemsDB = {
+            // Loot & Barter
             "Duct Tape": 420, "Metal Bolts": 102, "Metal Nuts": 96, "Metal Nails": 90,
             "Super Glue": 660, "Cotton": 300, "Ripstop": 720, "Aramid": 1020,
             "Linen": 1200, "Gunpowder": 360, "Steel Pipe": 420, "Metal": 270,
@@ -203,24 +182,53 @@
             "Copper Coil": 390, "AA Battery": 450, "Smartphone": 6000,
             "GPU": 15000, "SSD": 2400, "RAM": 1080, "CPU": 4800,
             "CPU Fan": 480, "PSU": 3000,
+
+            // Tools
+            "PH2 Screwdriver": 600, "Flathead Screwdriver": 630, "Wrench": 360, "Hammer": 600,
+
+            // Valuables
             "50g Gold": 17100, "Statue of Solter": 5940, "SPS": 24000,
             "Gold Watch": 15000, "Gold Tix": 7200, "Anton Plushie": 15000,
+
+            // Equipment
             "EDF Flare": 375000, "Cassette": 375000, "Repair Kit": 15000,
             "Fast MT": 20000, "Altyn": 22500, "Quad NVG": 65000,
+            "Fast MT Helmet": 20000, "Altyn Helmet": 22500, "Fast MT Visor": 75000,
+            "TOR-S Helmet": 10000, "HSPV": 375000, "IOTV Gen4": 125000,
+            "JPC Rush": 70000, "IOLA": 10000,
+
+            // Clothing
+            "Gorka Shirt": 3000, "Gorka Pants": 3000,
+            "Ghillie Shirt": 2000, "Ghillie Pants": 2000, "Ghillie Hood": 1500,
+            "Balaclava": 2000, "GP-5 Gas Mask": 2500,
+
+            // Backpacks
+            "10L Lynx": 2000, "30L Backpack": 4000, "45L Tortilla": 5000, "60L Raid": 12000,
+
+            // Weapons
             "TFZ98S": 550000, "R700": 500000, "AS-VAL": 110000,
-            "M4A1": 70000, "MK12": 70000, "MK23": 15000,
-            "SVD": 15000, "RPG": 27500, "Saiga": 15000,
-            "MP5SD": 5000, "AKMN": 9000,
-            "God M4A1": 525000, "God FAST MT": 950000,
-            "HSPV": 375000, "M4A1 Drum Mag": 275000
+            "M4A1": 70000, "MK12": 70000, "God M4A1": 550000,
+            "MK23": 15000, "God MK23": 35000,
+            "SVD": 15000, "God SVD": 15000,
+            "AKMN": 10000, "God AKMN": 40000,
+            "Saiga": 15000, "MP5SD": 5000, "PKM": 22500, "RPG": 30000,
+
+            // Attachments
+            "SOCOM556": 250000, "M4A1 Drum Mag": 275000,
+            "ACOG": 22500, "REAP-IR": 95000,
+
+            // Medicals & Others
+            "AI-4": 7500, "AI-2": 2000, "Survival Kit": 3000,
+            "BO5 Key": 12500, "Frigate Key": 15000, "ATC Key": 8000
         };
 
         let leftItems = [], rightItems = [];
-        let currentSide = null;
 
         function createSlots() {
             const left = document.getElementById('leftSlots');
             const right = document.getElementById('rightSlots');
+            left.innerHTML = '';
+            right.innerHTML = '';
             for (let i = 0; i < 6; i++) {
                 left.appendChild(createSlot('left'));
                 right.appendChild(createSlot('right'));
@@ -230,13 +238,13 @@
         function createSlot(side) {
             const slot = document.createElement('div');
             slot.className = 'slot';
-            slot.innerHTML = `<span style="font-size:35px;">+</span><small>Ajouter un élément</small>`;
+            slot.innerHTML = `<span style="font-size:42px;">+</span><small>Ajouter</small>`;
             slot.onclick = () => openModal(side);
             return slot;
         }
 
         function openModal(side) {
-            currentSide = side;
+            window.currentSide = side;
             document.getElementById('modal').style.display = 'flex';
             document.getElementById('modalSearch').value = "";
             renderModalItems("");
@@ -249,7 +257,7 @@
         function renderModalItems(filter) {
             const container = document.getElementById('modalGrid');
             container.innerHTML = "";
-            Object.keys(itemsDB).forEach(name => {
+            Object.keys(itemsDB).sort().forEach(name => {
                 if (!name.toLowerCase().includes(filter.toLowerCase())) return;
                 const card = document.createElement('div');
                 card.className = "modal-card";
@@ -260,7 +268,8 @@
         }
 
         function addItem(name) {
-            if (currentSide === 'left') leftItems.push(name);
+            const side = window.currentSide;
+            if (side === 'left') leftItems.push(name);
             else rightItems.push(name);
             renderAllSlots();
             updateResult();
@@ -283,7 +292,7 @@
                     slot.onclick = () => removeItem(side, index);
                 } else {
                     slot.classList.remove('added');
-                    slot.innerHTML = `<span style="font-size:35px;">+</span><small>Ajouter un élément</small>`;
+                    slot.innerHTML = `<span style="font-size:42px;">+</span><small>Ajouter</small>`;
                     slot.onclick = () => openModal(side);
                 }
             });
@@ -330,7 +339,7 @@
         }
 
         function resetAll() {
-            if (confirm("Réinitialiser tout le calculateur ?")) {
+            if (confirm("Réinitialiser tout ?")) {
                 leftItems = [];
                 rightItems = [];
                 renderAllSlots();
