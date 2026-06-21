@@ -311,4 +311,38 @@
 
             valueEl.textContent = (diff >= 0 ? "+" : "") + diff.toLocaleString() + " $";
 
-            if (diff > 600)
+            if (diff > 600) {
+                container.className = "result-container win";
+                icon.textContent = "✅";
+                title.textContent = "BON COMMERCE";
+                title.style.color = "#33ff33";
+            } else if (diff < -600) {
+                container.className = "result-container loss";
+                icon.textContent = "❌";
+                title.textContent = "PERTE DE COMMERCE";
+                title.style.color = "#ff3333";
+            } else {
+                container.className = "result-container fair";
+                icon.textContent = "⚖️";
+                title.textContent = "ÉCHANGE ÉQUITABLE";
+                title.style.color = "#ffcc33";
+            }
+        }
+
+        function resetAll() {
+            if (confirm("Réinitialiser tout le calculateur ?")) {
+                leftItems = [];
+                rightItems = [];
+                renderAllSlots();
+                updateResult();
+            }
+        }
+
+        document.getElementById('modalSearch').addEventListener('input', (e) => renderModalItems(e.target.value));
+
+        // Démarrage
+        createSlots();
+        updateResult();
+    </script>
+</body>
+</html>
