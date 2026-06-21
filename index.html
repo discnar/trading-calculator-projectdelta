@@ -2,13 +2,38 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Project Delta Calculator</title>
+<title>Project Delta Trade</title>
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<h1>Project Delta Trade Calculator</h1>
+<div class="topbar">
+  <h1>PROJECT DELTA TRADE CALCULATOR</h1>
+</div>
 
-<p>Site en ligne ✔</p>
+<div class="searchbar">
+  <input id="search" placeholder="Rechercher un item...">
+</div>
 
+<div class="container">
+
+  <div class="panel">
+    <h2>Vous donnez</h2>
+    <div id="left"></div>
+    <h3>Total : <span id="leftTotal">0</span> ₽</h3>
+  </div>
+
+  <div class="panel">
+    <h2>Vous recevez</h2>
+    <div id="right"></div>
+    <h3>Total : <span id="rightTotal">0</span> ₽</h3>
+  </div>
+
+</div>
+
+<div id="result"></div>
+
+<script src="script.js"></script>
 </body>
 </html>
