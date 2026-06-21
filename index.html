@@ -1,51 +1,260 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Project Delta Trade Calculator</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Delta Trade Calculator</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #0b0b0b;
+            color: white;
+            text-align: center;
+        }
+        .topbar {
+            background: linear-gradient(90deg, #1c1c1c, #111);
+            padding: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .searchbar {
+            margin: 15px;
+        }
+        .searchbar input {
+            width: 60%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: #1f1f1f;
+            color: white;
+            font-size: 16px;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+        .panel {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 15px;
+            width: 420px;
+            padding: 15px;
+        }
+        .panel h2 {
+            margin: 10px 0;
+            color: #ddd;
+        }
+        .item {
+            background: #262626;
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.2s;
+        }
+        .item:hover {
+            background: #333;
+            transform: scale(1.03);
+        }
+        button {
+            background: #3a3a3a;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #555;
+        }
+        .added-item {
+            background: #1f3a1f;
+            margin: 6px 0;
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        #result {
+            font-size: 32px;
+            margin: 30px;
+            font-weight: bold;
+        }
+        .win { color: #2ecc71; }
+        .loss { color: #e74c3c; }
+        .fair { color: #f1c40f; }
+        @media (max-width: 900px) {
+            .container { flex-direction: column; align-items: center; }
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- TOP BAR -->
-<div class="topbar">
-  <h1>PROJECT DELTA TRADE CALCULATOR</h1>
+    <div class="topbar">
+        PROJECT DELTA TRADE CALCULATOR
+    </div>
 
-  <!-- SEARCH (UNIQUE + CORRECT) -->
-  <div class="searchbar">
-    <input id="search" placeholder="Rechercher un item...">
-  </div>
-</div>
+    <div class="searchbar">
+        <input type="text" id="search" placeholder="Rechercher un item...">
+    </div>
 
-<!-- MAIN CONTAINER -->
-<div class="container">
+    <div class="container">
 
-  <!-- LEFT SIDE -->
-  <div class="panel">
-    <h2>Vous donnez</h2>
+        <!-- Vous donnez -->
+        <div class="panel">
+            <h2>Vous donnez</h2>
+            <div id="left-list"></div>
+            <h3>Total : <span id="leftTotal">0</span> ₽</h3>
+        </div>
 
-    <div id="left"></div>
+        <!-- Vous recevez -->
+        <div class="panel">
+            <h2>Vous recevez</h2>
+            <div id="right-list"></div>
+            <h3>Total : <span id="rightTotal">0</span> ₽</h3>
+        </div>
 
-    <h3>Total : <span id="leftTotal">0</span> ₽</h3>
-  </div>
+    </div>
 
-  <!-- RIGHT SIDE -->
-  <div class="panel">
-    <h2>Vous recevez</h2>
+    <div id="result">⚖️ FAIR</div>
 
-    <div id="right"></div>
+    <script>
+        // === BASE DE DONNÉES COMPLETE ===
+        const itemsDB = {
+            "Duct Tape": 420,
+            "Metal Bolts": 102,
+            "Metal Nuts": 96,
+            "Metal Nails": 90,
+            "Super Glue": 660,
+            "Cotton": 300,
+            "Ripstop": 720,
+            "Aramid": 1020,
+            "Linen": 1200,
+            "Gunpowder": 360,
+            "Steel Pipe": 420,
+            "Metal": 270,
+            "Wooden Planks": 174,
+            "Motor Oil": 1080,
+            "Fuze": 210,
+            "Weapon Part": 1200,
+            "Copper Coil": 390,
+            "AA Battery": 450,
+            "Smartphone": 6000,
+            "GPU": 15000,
+            "SSD": 2400,
+            "RAM": 1080,
+            "CPU": 4800,
+            "CPU Fan": 480,
+            "PSU": 3000,
+            "PH2 Screwdriver": 600,
+            "Flathead Screwdriver": 630,
+            "Wrench": 360,
+            "Hammer": 600,
+            "50g Gold": 17100,
+            "Statue of Solter": 5940,
+            "SPS": 24000,
+            "Gold Watch": 15000,
+            "Gold Tix": 7200,
+            "Anton Plushie": 15000,
+            "EDF Flare": 375000,
+            "Cassette": 375000,
+            "Repair Kit": 15000,
+            "Fast MT": 20000,
+            "Altyn": 22500,
+            "Quad NVG": 65000,
+            "TFZ98S": 550000,
+            "R700": 500000,
+            "AS-VAL": 110000,
+            "M4A1": 70000,
+            "MK12": 70000,
+            "MK23": 15000,
+            "SVD": 15000,
+            "RPG": 27500,
+            "Saiga": 15000,
+            "MP5SD": 5000,
+            "AKMN": 9000,
+            "God M4A1": 525000,
+            "God FAST MT": 950000,
+            "HSPV": 375000,
+            "M4A1 Drum Mag": 275000
+        };
 
-    <h3>Total : <span id="rightTotal">0</span> ₽</h3>
-  </div>
+        let leftItems = [];
+        let rightItems = [];
 
-</div>
+        const searchInput = document.getElementById('search');
+        const leftList = document.getElementById('left-list');
+        const rightList = document.getElementById('right-list');
 
-<!-- RESULT -->
-<div id="result"></div>
+        function renderItems(filter = "") {
+            leftList.innerHTML = '';
+            rightList.innerHTML = '';
 
-<!-- SCRIPT -->
-<script src="script.js"></script>
+            Object.keys(itemsDB).forEach(name => {
+                if (!name.toLowerCase().includes(filter.toLowerCase())) return;
+
+                const price = itemsDB[name];
+
+                const div = document.createElement('div');
+                div.className = 'item';
+                div.innerHTML = `
+                    <span>${name} — ${price.toLocaleString()} ₽</span>
+                    <button onclick="addToSide('${name}', 'left')">→</button>
+                    <button onclick="addToSide('${name}', 'right')">←</button>
+                `;
+                leftList.appendChild(div.cloneNode(true));
+                rightList.appendChild(div);
+            });
+        }
+
+        window.addToSide = function(name, side) {
+            if (side === 'left') leftItems.push(name);
+            else rightItems.push(name);
+            updateTotals();
+        };
+
+        function updateTotals() {
+            const leftTotal = leftItems.reduce((sum, item) => sum + itemsDB[item], 0);
+            const rightTotal = rightItems.reduce((sum, item) => sum + itemsDB[item], 0);
+
+            document.getElementById('leftTotal').textContent = leftTotal.toLocaleString();
+            document.getElementById('rightTotal').textContent = rightTotal.toLocaleString();
+
+            const diff = rightTotal - leftTotal;
+            const resultEl = document.getElementById('result');
+
+            if (diff > 10000) {
+                resultEl.innerHTML = '🟢 GROS WIN';
+                resultEl.className = 'win';
+            } else if (diff > 5000) {
+                resultEl.innerHTML = '🟢 WIN';
+                resultEl.className = 'win';
+            } else if (diff < -10000) {
+                resultEl.innerHTML = '🔴 GROS LOSS';
+                resultEl.className = 'loss';
+            } else if (diff < -5000) {
+                resultEl.innerHTML = '🔴 LOSS';
+                resultEl.className = 'loss';
+            } else {
+                resultEl.innerHTML = '⚖️ FAIR';
+                resultEl.className = 'fair';
+            }
+        }
+
+        // Recherche en direct
+        searchInput.addEventListener('input', () => {
+            renderItems(searchInput.value);
+        });
+
+        // Initialisation
+        renderItems();
+    </script>
 
 </body>
 </html>
