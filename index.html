@@ -12,25 +12,12 @@
             font-family: 'Segoe UI', Arial, sans-serif;
             padding: 20px;
         }
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 28px;
-        }
-        .search {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto 30px;
-            padding: 15px;
-            border: none;
-            border-radius: 12px;
-            background: #1f1f1f;
-            color: white;
-            font-size: 17px;
-        }
+        h1 { text-align: center; margin-bottom: 20px; }
+        .search-main { width: 80%; max-width: 600px; margin: 0 auto 30px; padding: 15px; background: #1f1f1f; border-radius: 12px; border: none; color: white; font-size: 17px; }
+
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
             gap: 16px;
             max-width: 1400px;
             margin: 0 auto;
@@ -41,30 +28,73 @@
             padding: 12px;
             text-align: center;
             transition: 0.2s;
-            cursor: pointer;
             border: 1px solid #333;
         }
-        .card:hover {
-            transform: scale(1.05);
-            border-color: #00ccff;
-            box-shadow: 0 0 15px rgba(0, 204, 255, 0.3);
-        }
-        .card img {
-            width: 80px;
-            height: 80px;
-            background: #333;
-            border-radius: 8px;
+        .card:hover { border-color: #00ccff; transform: scale(1.04); }
+        .card img, .card .emoji {
+            font-size: 55px;
             margin-bottom: 8px;
-            object-fit: contain;
         }
-        .card h3 {
-            font-size: 14px;
-            margin: 6px 0;
-        }
-        .card .price {
-            color: #ffcc00;
+        .card h3 { font-size: 15px; margin: 5px 0; }
+        .card .price { color: #ffcc00; font-weight: bold; }
+        .add-btn {
+            margin-top: 8px;
+            background: #00ccff;
+            color: black;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
             font-weight: bold;
         }
+
+        /* MODAL / PAGE DE RECHERCHE */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: #1a1a1a;
+            width: 90%;
+            max-width: 700px;
+            border-radius: 16px;
+            padding: 20px;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .modal-search {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #111;
+            border: none;
+            border-radius: 10px;
+            color: white;
+        }
+        .modal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        .modal-card {
+            background: #222;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .modal-card:hover { background: #00ccff; color: black; }
+
         .offers {
             display: flex;
             justify-content: center;
@@ -78,16 +108,17 @@
             padding: 20px;
             width: 380px;
         }
-        .added {
+        .added-item {
             background: #1f2a1f;
-            border: 2px solid #00ccff;
-            margin: 8px 0;
             padding: 10px;
-            border-radius: 10px;
+            margin: 6px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
         }
         #result {
             text-align: center;
-            font-size: 32px;
+            font-size: 34px;
             margin: 30px 0;
             font-weight: bold;
         }
@@ -96,7 +127,7 @@
 <body>
 
     <h1>PROJECT DELTA TRADE CALCULATOR</h1>
-    <input type="text" class="search" id="search" placeholder="Rechercher un item... (ex: GPU, EDF Flare, M4A1)">
+    <input type="text" class="search-main" id="mainSearch" placeholder="Rechercher un item...">
 
     <div class="grid" id="itemGrid"></div>
 
@@ -106,7 +137,6 @@
             <div id="leftOffer"></div>
             <h3>Total : <span id="leftTotal">0</span> ₽</h3>
         </div>
-
         <div class="panel">
             <h2>Leur offre</h2>
             <div id="rightOffer"></div>
@@ -116,80 +146,113 @@
 
     <div id="result">⚖️ FAIR TRADE</div>
 
+    <!-- MODAL PAGE DE RECHERCHE -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Ajouter un item</h2>
+                <button onclick="closeModal()" style="background:none;border:none;color:white;font-size:24px;cursor:pointer;">✕</button>
+            </div>
+            <input type="text" class="modal-search" id="modalSearch" placeholder="Tape le nom de l'item...">
+            <div class="modal-grid" id="modalGrid"></div>
+        </div>
+    </div>
+
     <script>
         const itemsDB = {
-            "Duct Tape": {price: 420, img: "📦"},
-            "Super Glue": {price: 660, img: "🧪"},
-            "GPU": {price: 15000, img: "💻"},
-            "CPU": {price: 4800, img: "🔧"},
-            "SSD": {price: 2400, img: "💾"},
-            "50g Gold": {price: 17100, img: "🪙"},
-            "Gold Watch": {price: 15000, img: "⌚"},
-            "EDF Flare": {price: 375000, img: "🚀"},
-            "Cassette": {price: 375000, img: "📼"},
-            "TFZ98S": {price: 550000, img: "🔫"},
-            "R700": {price: 500000, img: "🔫"},
-            "AS-VAL": {price: 110000, img: "🔫"},
-            "M4A1": {price: 70000, img: "🔫"},
-            "God FAST MT": {price: 950000, img: "🛡️"},
-            "HSPV": {price: 375000, img: "🛡️"},
-            "Quad NVG": {price: 65000, img: "👓"}
+            "Duct Tape": {price: 420, emoji: "📦"},
+            "Super Glue": {price: 660, emoji: "🧪"},
+            "GPU": {price: 15000, emoji: "💻"},
+            "CPU": {price: 4800, emoji: "🔧"},
+            "SSD": {price: 2400, emoji: "💾"},
+            "50g Gold": {price: 17100, emoji: "🪙"},
+            "Gold Watch": {price: 15000, emoji: "⌚"},
+            "EDF Flare": {price: 375000, emoji: "🚀"},
+            "Cassette": {price: 375000, emoji: "📼"},
+            "TFZ98S": {price: 550000, emoji: "🔫"},
+            "R700": {price: 500000, emoji: "🔫"},
+            "AS-VAL": {price: 110000, emoji: "🔫"},
+            "M4A1": {price: 70000, emoji: "🔫"},
+            "God FAST MT": {price: 950000, emoji: "🛡️"},
+            "HSPV": {price: 375000, emoji: "🛡️"},
+            "Quad NVG": {price: 65000, emoji: "👓"},
+            "Fast MT": {price: 20000, emoji: "🪖"},
+            "Altyn": {price: 22500, emoji: "🪖"}
         };
 
-        let leftItems = [];
-        let rightItems = [];
-
-        const grid = document.getElementById('itemGrid');
-        const searchInput = document.getElementById('search');
+        let leftItems = [], rightItems = [];
+        let currentSide = 'left';
 
         function renderGrid(filter = "") {
+            const grid = document.getElementById('itemGrid');
             grid.innerHTML = "";
-
             Object.keys(itemsDB).forEach(name => {
                 if (!name.toLowerCase().includes(filter.toLowerCase())) return;
-
                 const data = itemsDB[name];
                 const card = document.createElement('div');
                 card.className = "card";
                 card.innerHTML = `
-                    <div style="font-size:50px;">${data.img}</div>
+                    <div class="emoji">${data.emoji}</div>
                     <h3>${name}</h3>
                     <div class="price">${data.price.toLocaleString()} ₽</div>
+                    <button class="add-btn" onclick="openModal('${name}')">+ Ajouter</button>
                 `;
-                card.onclick = () => addItem(name);
                 grid.appendChild(card);
             });
         }
 
-        function addItem(name) {
-            const side = confirm("Ajouter à Votre offre ? (OK = Votre offre | Annuler = Leur offre)") ? 'left' : 'right';
-
-            if (side === 'left') {
-                leftItems.push(name);
-                renderAdded('leftOffer', leftItems);
-            } else {
-                rightItems.push(name);
-                renderAdded('rightOffer', rightItems);
-            }
-            updateTotals();
+        function openModal(defaultName = "") {
+            currentSide = prompt("Ajouter à : \n1 = Votre offre\n2 = Leur offre") === "1" ? "left" : "right";
+            document.getElementById('modal').style.display = "flex";
+            document.getElementById('modalSearch').focus();
+            renderModalGrid(defaultName);
         }
 
-        function renderAdded(containerId, list) {
-            const container = document.getElementById(containerId);
+        function closeModal() {
+            document.getElementById('modal').style.display = "none";
+        }
+
+        function renderModalGrid(filter = "") {
+            const container = document.getElementById('modalGrid');
             container.innerHTML = "";
-            list.forEach((name, index) => {
-                const div = document.createElement('div');
-                div.className = "added";
-                div.innerHTML = `${name} — ${itemsDB[name].price.toLocaleString()} ₽ 
-                    <button onclick="removeItem('${containerId}', ${index})" style="color:red;">×</button>`;
-                container.appendChild(div);
+            Object.keys(itemsDB).forEach(name => {
+                if (!name.toLowerCase().includes(filter.toLowerCase())) return;
+                const data = itemsDB[name];
+                const card = document.createElement('div');
+                card.className = "modal-card";
+                card.innerHTML = `${data.emoji}<br><b>${name}</b><br><small>${data.price.toLocaleString()} ₽</small>`;
+                card.onclick = () => {
+                    addToOffer(name);
+                    closeModal();
+                };
+                container.appendChild(card);
             });
         }
 
-        window.removeItem = function(containerId, index) {
-            if (containerId === 'leftOffer') leftItems.splice(index, 1);
+        function addToOffer(name) {
+            if (currentSide === 'left') leftItems.push(name);
+            else rightItems.push(name);
+            renderOffers();
+            updateTotals();
+        }
+
+        function renderOffers() {
+            const leftDiv = document.getElementById('leftOffer');
+            const rightDiv = document.getElementById('rightOffer');
+
+            leftDiv.innerHTML = leftItems.map((name, i) => 
+                `<div class="added-item">${name} — ${itemsDB[name].price.toLocaleString()} ₽ <button onclick="removeItem('left', ${i})" style="color:red;">×</button></div>`
+            ).join('');
+
+            rightDiv.innerHTML = rightItems.map((name, i) => 
+                `<div class="added-item">${name} — ${itemsDB[name].price.toLocaleString()} ₽ <button onclick="removeItem('right', ${i})" style="color:red;">×</button></div>`
+            ).join('');
+        }
+
+        window.removeItem = function(side, index) {
+            if (side === 'left') leftItems.splice(index, 1);
             else rightItems.splice(index, 1);
-            renderAdded(containerId, containerId === 'leftOffer' ? leftItems : rightItems);
+            renderOffers();
             updateTotals();
         };
 
@@ -201,21 +264,21 @@
             document.getElementById('rightTotal').textContent = rightTotal.toLocaleString();
 
             const diff = rightTotal - leftTotal;
-            const resultEl = document.getElementById('result');
-
-            if (diff > 50000) resultEl.textContent = "🟢 EXCELLENT WIN";
-            else if (diff > 10000) resultEl.textContent = "🟢 WIN";
-            else if (diff < -50000) resultEl.textContent = "🔴 BIG LOSS";
-            else if (diff < -10000) resultEl.textContent = "🔴 LOSS";
-            else resultEl.textContent = "⚖️ FAIR TRADE";
+            const result = document.getElementById('result');
+            if (diff > 50000) result.textContent = "🟢 EXCELLENT WIN";
+            else if (diff > 10000) result.textContent = "🟢 WIN";
+            else if (diff < -50000) result.textContent = "🔴 BIG LOSS";
+            else if (diff < -10000) result.textContent = "🔴 LOSS";
+            else result.textContent = "⚖️ FAIR TRADE";
         }
 
-        // Recherche en temps réel
-        searchInput.addEventListener('input', () => renderGrid(searchInput.value));
+        // Recherche principale
+        document.getElementById('mainSearch').addEventListener('input', (e) => renderGrid(e.target.value));
+        // Recherche dans le modal
+        document.getElementById('modalSearch').addEventListener('input', (e) => renderModalGrid(e.target.value));
 
-        // Affichage initial
+        // Démarrage
         renderGrid();
     </script>
-
 </body>
 </html>
