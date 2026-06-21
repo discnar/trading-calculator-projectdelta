@@ -98,147 +98,64 @@
         }
         .result {
             text-align: center;
-            font-size: 32px;
+            font-size: 34px;
             margin: 30px 0;
             font-weight: bold;
-        }
-        .language-bar {
-            position: fixed;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1a1a1a;
-            padding: 10px 20px;
-            border-radius: 30px;
-            border: 1px solid #333;
-            z-index: 2000;
-        }
-        .language-bar select {
-            background: #222;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 20px;
-            font-size: 15px;
         }
     </style>
 </head>
 <body>
 
-    <div class="header" id="title">PROJECT DELTA TRADE CALCULATOR</div>
+    <div class="header">PROJECT DELTA TRADE CALCULATOR</div>
 
     <div class="main">
         <div class="panel">
-            <h2 id="leftTitle">TU DONNES</h2>
+            <h2>TU DONNES</h2>
             <div class="slots" id="leftSlots"></div>
-            <h3 style="text-align:center; margin-top:15px;">Total : <span id="leftTotal">0</span> ₽</h3>
+            <h3 style="text-align:center; margin-top:15px;">Total : <span id="leftTotal">0</span> $</h3>
         </div>
 
         <div class="panel">
-            <h2 id="rightTitle">ILS DONNENT</h2>
+            <h2>ILS DONNENT</h2>
             <div class="slots" id="rightSlots"></div>
-            <h3 style="text-align:center; margin-top:15px;">Total : <span id="rightTotal">0</span> ₽</h3>
+            <h3 style="text-align:center; margin-top:15px;">Total : <span id="rightTotal">0</span> $</h3>
         </div>
     </div>
 
-    <div class="result" id="result">⚖️ ÉCHANGE ÉQUITABLE</div>
+    <div class="result" id="result">⚖️ FAIR TRADE</div>
 
     <!-- MODAL -->
     <div class="modal" id="modal">
         <div class="modal-content">
-            <h2 id="modalTitle" style="margin-bottom:15px;">Rechercher un item</h2>
+            <h2 style="margin-bottom:15px;">Rechercher un item</h2>
             <input type="text" class="modal-search" id="modalSearch" placeholder="Tape le nom de l'item...">
             <div class="modal-grid" id="modalGrid"></div>
         </div>
     </div>
 
-    <!-- MENU LANGUE -->
-    <div class="language-bar">
-        <select id="languageSelect">
-            <option value="fr">🇫🇷 Français</option>
-            <option value="en">🇬🇧 English</option>
-        </select>
-    </div>
-
     <script>
         const itemsDB = {
-            "Duct Tape": {fr: "Ruban Adhésif", price: 420},
-            "Metal Bolts": {fr: "Boulons Métal", price: 102},
-            "Metal Nuts": {fr: "Écrous Métal", price: 96},
-            "Metal Nails": {fr: "Clous Métal", price: 90},
-            "Super Glue": {fr: "Super Colle", price: 660},
-            "Cotton": {fr: "Coton", price: 300},
-            "Ripstop": {fr: "Ripstop", price: 720},
-            "Aramid": {fr: "Aramide", price: 1020},
-            "Linen": {fr: "Lin", price: 1200},
-            "Gunpowder": {fr: "Poudre à Canon", price: 360},
-            "Steel Pipe": {fr: "Tuyau Acier", price: 420},
-            "Metal": {fr: "Métal", price: 270},
-            "Wooden Planks": {fr: "Planches de Bois", price: 174},
-            "Motor Oil": {fr: "Huile Moteur", price: 1080},
-            "Fuze": {fr: "Détonateur", price: 210},
-            "Weapon Part": {fr: "Pièce d'Arme", price: 1200},
-            "Copper Coil": {fr: "Bobine de Cuivre", price: 390},
-            "AA Battery": {fr: "Pile AA", price: 450},
-            "Smartphone": {fr: "Smartphone", price: 6000},
-            "GPU": {fr: "Carte Graphique", price: 15000},
-            "SSD": {fr: "SSD", price: 2400},
-            "RAM": {fr: "RAM", price: 1080},
-            "CPU": {fr: "Processeur", price: 4800},
-            "CPU Fan": {fr: "Ventilateur CPU", price: 480},
-            "PSU": {fr: "Alimentation", price: 3000},
-            "PH2 Screwdriver": {fr: "Tournevis PH2", price: 600},
-            "Flathead Screwdriver": {fr: "Tournevis Plat", price: 630},
-            "Wrench": {fr: "Clé à Molette", price: 360},
-            "Hammer": {fr: "Marteau", price: 600},
-            "50g Gold": {fr: "50g d'Or", price: 17100},
-            "Statue of Solter": {fr: "Statue de Solter", price: 5940},
-            "SPS": {fr: "SPS", price: 24000},
-            "Gold Watch": {fr: "Montre en Or", price: 15000},
-            "Gold Tix": {fr: "Gold Tix", price: 7200},
-            "Anton Plushie": {fr: "Peluche Anton", price: 15000},
-            "EDF Flare": {fr: "Fusée EDF", price: 375000},
-            "Cassette": {fr: "Cassette", price: 375000},
-            "Repair Kit": {fr: "Kit de Réparation", price: 15000},
-            "Fast MT": {fr: "Fast MT", price: 20000},
-            "Altyn": {fr: "Altyn", price: 22500},
-            "Quad NVG": {fr: "NVG Quad", price: 65000},
-            "TFZ98S": {fr: "TFZ98S", price: 550000},
-            "R700": {fr: "R700", price: 500000},
-            "AS-VAL": {fr: "AS-VAL", price: 110000},
-            "M4A1": {fr: "M4A1", price: 70000},
-            "MK12": {fr: "MK12", price: 70000},
-            "MK23": {fr: "MK23", price: 15000},
-            "SVD": {fr: "SVD", price: 15000},
-            "RPG": {fr: "RPG", price: 27500},
-            "Saiga": {fr: "Saiga", price: 15000},
-            "MP5SD": {fr: "MP5SD", price: 5000},
-            "AKMN": {fr: "AKMN", price: 9000},
-            "God M4A1": {fr: "God M4A1", price: 525000},
-            "God FAST MT": {fr: "God FAST MT", price: 950000},
-            "HSPV": {fr: "HSPV", price: 375000},
-            "M4A1 Drum Mag": {fr: "M4A1 Drum Mag", price: 275000}
+            "Duct Tape": 420, "Metal Bolts": 102, "Metal Nuts": 96, "Metal Nails": 90,
+            "Super Glue": 660, "Cotton": 300, "Ripstop": 720, "Aramid": 1020,
+            "Linen": 1200, "Gunpowder": 360, "Steel Pipe": 420, "Metal": 270,
+            "Wooden Planks": 174, "Motor Oil": 1080, "Fuze": 210, "Weapon Part": 1200,
+            "Copper Coil": 390, "AA Battery": 450, "Smartphone": 6000,
+            "GPU": 15000, "SSD": 2400, "RAM": 1080, "CPU": 4800,
+            "CPU Fan": 480, "PSU": 3000,
+            "50g Gold": 17100, "Statue of Solter": 5940, "SPS": 24000,
+            "Gold Watch": 15000, "Gold Tix": 7200, "Anton Plushie": 15000,
+            "EDF Flare": 375000, "Cassette": 375000, "Repair Kit": 15000,
+            "Fast MT": 20000, "Altyn": 22500, "Quad NVG": 65000,
+            "TFZ98S": 550000, "R700": 500000, "AS-VAL": 110000,
+            "M4A1": 70000, "MK12": 70000, "MK23": 15000,
+            "SVD": 15000, "RPG": 27500, "Saiga": 15000,
+            "MP5SD": 5000, "AKMN": 9000,
+            "God M4A1": 525000, "God FAST MT": 950000,
+            "HSPV": 375000, "M4A1 Drum Mag": 275000
         };
 
         let leftItems = [], rightItems = [];
         let currentSide = null;
-        let currentLang = "fr";
-
-        const translations = {
-            fr: { title: "PROJECT DELTA TRADE CALCULATOR", leftTitle: "TU DONNES", rightTitle: "ILS DONNENT", modalTitle: "Rechercher un item", searchPlaceholder: "Tape le nom de l'item...", fair: "⚖️ ÉCHANGE ÉQUITABLE" },
-            en: { title: "PROJECT DELTA TRADE CALCULATOR", leftTitle: "YOU GIVE", rightTitle: "THEY GIVE", modalTitle: "Search an item", searchPlaceholder: "Type item name...", fair: "⚖️ FAIR TRADE" }
-        };
-
-        function changeLanguage(lang) {
-            currentLang = lang;
-            document.getElementById('title').textContent = translations[lang].title;
-            document.getElementById('leftTitle').textContent = translations[lang].leftTitle;
-            document.getElementById('rightTitle').textContent = translations[lang].rightTitle;
-            document.getElementById('modalTitle').textContent = translations[lang].modalTitle;
-            document.getElementById('modalSearch').placeholder = translations[lang].searchPlaceholder;
-            renderAllSlots();
-            updateTotals();
-        }
 
         function createSlots() {
             const left = document.getElementById('leftSlots');
@@ -272,22 +189,20 @@
             const container = document.getElementById('modalGrid');
             container.innerHTML = "";
 
-            Object.keys(itemsDB).forEach(key => {
-                const item = itemsDB[key];
-                const displayName = item.fr || key;
-                if (!displayName.toLowerCase().includes(filter.toLowerCase())) return;
+            Object.keys(itemsDB).forEach(name => {
+                if (!name.toLowerCase().includes(filter.toLowerCase())) return;
 
                 const card = document.createElement('div');
                 card.className = "modal-card";
-                card.innerHTML = `<strong>${displayName}</strong><br><small>${item.price.toLocaleString()} ₽</small>`;
-                card.onclick = () => addItem(key);
+                card.innerHTML = `<strong>${name}</strong><br><small>${itemsDB[name].toLocaleString()} $</small>`;
+                card.onclick = () => addItem(name);
                 container.appendChild(card);
             });
         }
 
-        function addItem(key) {
-            if (currentSide === 'left') leftItems.push(key);
-            else rightItems.push(key);
+        function addItem(name) {
+            if (currentSide === 'left') leftItems.push(name);
+            else rightItems.push(name);
             renderAllSlots();
             updateTotals();
             closeModal();
@@ -304,11 +219,9 @@
 
             Array.from(slots).forEach((slot, index) => {
                 if (index < itemsList.length) {
-                    const key = itemsList[index];
-                    const item = itemsDB[key];
-                    const displayName = item.fr || key;
+                    const name = itemsList[index];
                     slot.classList.add('added');
-                    slot.innerHTML = `<div class="name">${displayName}</div><div class="price">${item.price.toLocaleString()} ₽</div>`;
+                    slot.innerHTML = `<div class="name">${name}</div><div class="price">${itemsDB[name].toLocaleString()} $</div>`;
                     slot.onclick = () => removeItem(side, index);
                 } else {
                     slot.classList.remove('added');
@@ -326,27 +239,30 @@
         }
 
         function updateTotals() {
-            const leftTotal = leftItems.reduce((sum, key) => sum + itemsDB[key].price, 0);
-            const rightTotal = rightItems.reduce((sum, key) => sum + itemsDB[key].price, 0);
+            const leftTotal = leftItems.reduce((sum, name) => sum + itemsDB[name], 0);
+            const rightTotal = rightItems.reduce((sum, name) => sum + itemsDB[name], 0);
 
             document.getElementById('leftTotal').textContent = leftTotal.toLocaleString();
             document.getElementById('rightTotal').textContent = rightTotal.toLocaleString();
 
             const diff = rightTotal - leftTotal;
-            const res = document.getElementById('result');
+            const resultEl = document.getElementById('result');
 
-            if (diff > 50000) res.textContent = "🟢 EXCELLENT WIN";
-            else if (diff > 10000) res.textContent = "🟢 WIN";
-            else if (diff < -50000) res.textContent = "🔴 GROS LOSS";
-            else if (diff < -10000) res.textContent = "🔴 LOSS";
-            else res.textContent = translations[currentLang].fair;
+            if (diff > 600) {
+                resultEl.textContent = "🟢 WIN";
+                resultEl.style.color = "#2ecc71";
+            } else if (diff < -600) {
+                resultEl.textContent = "🔴 LOSS";
+                resultEl.style.color = "#e74c3c";
+            } else {
+                resultEl.textContent = "⚖️ FAIR TRADE";
+                resultEl.style.color = "#f1c40f";
+            }
         }
 
         document.getElementById('modalSearch').addEventListener('input', (e) => renderModalItems(e.target.value));
-        document.getElementById('languageSelect').addEventListener('change', (e) => changeLanguage(e.target.value));
 
         createSlots();
-        changeLanguage("fr");
     </script>
 </body>
 </html>
