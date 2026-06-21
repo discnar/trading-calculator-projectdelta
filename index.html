@@ -41,14 +41,15 @@
             transition: 0.2s;
             padding: 5px;
             text-align: center;
+            font-size: 13px;
         }
         .slot:hover { border-color: #00ccff; }
         .slot.added {
             border: 2px solid #00ccff;
             background: #1f2a1f;
         }
-        .slot .name { font-size: 13px; font-weight: bold; }
-        .slot .price { font-size: 12px; color: #ffcc00; }
+        .slot .name { font-weight: bold; }
+        .slot .price { color: #ffcc00; font-size: 12px; }
 
         /* Modal */
         .modal {
@@ -79,7 +80,7 @@
         }
         .modal-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 12px;
             max-height: 65vh;
             overflow-y: auto;
@@ -103,7 +104,6 @@
             font-weight: bold;
         }
 
-        /* Menu Langue en bas */
         .language-bar {
             position: fixed;
             bottom: 15px;
@@ -122,7 +122,6 @@
             padding: 8px 12px;
             border-radius: 20px;
             font-size: 15px;
-            cursor: pointer;
         }
     </style>
 </head>
@@ -144,7 +143,7 @@
         </div>
     </div>
 
-    <div class="result" id="result">⚖️ FAIR TRADE</div>
+    <div class="result" id="result">⚖️ ÉCHANGE ÉQUITABLE</div>
 
     <!-- MODAL -->
     <div class="modal" id="modal">
@@ -164,6 +163,32 @@
     </div>
 
     <script>
+        const itemsDB = {
+            "Duct Tape": {en: "Duct Tape", fr: "Ruban Adhésif", price: 420},
+            "Metal Bolts": {en: "Metal Bolts", fr: "Boulons", price: 102},
+            "Metal Nuts": {en: "Metal Nuts", fr: "Écrous", price: 96},
+            "Super Glue": {en: "Super Glue", fr: "Super Colle", price: 660},
+            "GPU": {en: "GPU", fr: "Carte Graphique", price: 15000},
+            "CPU": {en: "CPU", fr: "Processeur", price: 4800},
+            "SSD": {en: "SSD", fr: "SSD", price: 2400},
+            "50g Gold": {en: "50g Gold", fr: "50g d'Or", price: 17100},
+            "Gold Watch": {en: "Gold Watch", fr: "Montre en Or", price: 15000},
+            "EDF Flare": {en: "EDF Flare", fr: "Fusée EDF", price: 375000},
+            "Cassette": {en: "Cassette", fr: "Cassette", price: 375000},
+            "Fast MT": {en: "Fast MT", fr: "Fast MT", price: 20000},
+            "Altyn": {en: "Altyn", fr: "Altyn", price: 22500},
+            "Quad NVG": {en: "Quad NVG", fr: "NVG Quad", price: 65000},
+            "TFZ98S": {en: "TFZ98S", fr: "TFZ98S", price: 550000},
+            "R700": {en: "R700", fr: "R700", price: 500000},
+            "AS-VAL": {en: "AS-VAL", fr: "AS-VAL", price: 110000},
+            "M4A1": {en: "M4A1", fr: "M4A1", price: 70000},
+            "God FAST MT": {en: "God FAST MT", fr: "God FAST MT", price: 950000}
+        };
+
+        let leftItems = [], rightItems = [];
+        let currentSide = null;
+        let currentLang = "fr";
+
         const translations = {
             fr: {
                 title: "PROJECT DELTA TRADE CALCULATOR",
@@ -171,7 +196,7 @@
                 rightTitle: "ILS DONNENT",
                 modalTitle: "Rechercher un item",
                 searchPlaceholder: "Tape le nom de l'item...",
-                fair: "⚖️ FAIR TRADE"
+                fair: "⚖️ ÉCHANGE ÉQUITABLE"
             },
             en: {
                 title: "PROJECT DELTA TRADE CALCULATOR",
@@ -183,30 +208,6 @@
             }
         };
 
-        const itemsDB = {
-            "Duct Tape": 420, "Metal Bolts": 102, "Metal Nuts": 96, "Metal Nails": 90,
-            "Super Glue": 660, "Cotton": 300, "Ripstop": 720, "Aramid": 1020,
-            "Linen": 1200, "Gunpowder": 360, "Steel Pipe": 420, "Metal": 270,
-            "Wooden Planks": 174, "Motor Oil": 1080, "Fuze": 210, "Weapon Part": 1200,
-            "Copper Coil": 390, "AA Battery": 450, "Smartphone": 6000,
-            "GPU": 15000, "SSD": 2400, "RAM": 1080, "CPU": 4800,
-            "CPU Fan": 480, "PSU": 3000,
-            "50g Gold": 17100, "Statue of Solter": 5940, "SPS": 24000,
-            "Gold Watch": 15000, "Gold Tix": 7200, "Anton Plushie": 15000,
-            "EDF Flare": 375000, "Cassette": 375000, "Repair Kit": 15000,
-            "Fast MT": 20000, "Altyn": 22500, "Quad NVG": 65000,
-            "TFZ98S": 550000, "R700": 500000, "AS-VAL": 110000,
-            "M4A1": 70000, "MK12": 70000, "MK23": 15000,
-            "SVD": 15000, "RPG": 27500, "Saiga": 15000,
-            "MP5SD": 5000, "AKMN": 9000,
-            "God M4A1": 525000, "God FAST MT": 950000,
-            "HSPV": 375000, "M4A1 Drum Mag": 275000
-        };
-
-        let leftItems = [], rightItems = [];
-        let currentSide = null;
-        let currentLang = "fr";
-
         function changeLanguage(lang) {
             currentLang = lang;
             document.getElementById('title').textContent = translations[lang].title;
@@ -214,10 +215,9 @@
             document.getElementById('rightTitle').textContent = translations[lang].rightTitle;
             document.getElementById('modalTitle').textContent = translations[lang].modalTitle;
             document.getElementById('modalSearch').placeholder = translations[lang].searchPlaceholder;
-            updateTotals(); // refresh result text
+            renderAllSlots();
+            updateTotals();
         }
-
-        // ... (le reste du code reste identique)
 
         function createSlots() {
             const left = document.getElementById('leftSlots');
@@ -251,21 +251,23 @@
             const container = document.getElementById('modalGrid');
             container.innerHTML = "";
 
-            Object.keys(itemsDB).forEach(name => {
-                if (!name.toLowerCase().includes(filter.toLowerCase())) return;
+            Object.keys(itemsDB).forEach(key => {
+                const item = itemsDB[key];
+                const displayName = currentLang === "fr" ? item.fr : item.en;
 
-                const price = itemsDB[name];
+                if (!displayName.toLowerCase().includes(filter.toLowerCase())) return;
+
                 const card = document.createElement('div');
                 card.className = "modal-card";
-                card.innerHTML = `<strong>${name}</strong><br><small>${price.toLocaleString()} ₽</small>`;
-                card.onclick = () => addItem(name);
+                card.innerHTML = `<strong>${displayName}</strong><br><small>${item.price.toLocaleString()} ₽</small>`;
+                card.onclick = () => addItem(key);
                 container.appendChild(card);
             });
         }
 
-        function addItem(name) {
-            if (currentSide === 'left') leftItems.push(name);
-            else rightItems.push(name);
+        function addItem(key) {
+            if (currentSide === 'left') leftItems.push(key);
+            else rightItems.push(key);
             renderAllSlots();
             updateTotals();
             closeModal();
@@ -282,11 +284,14 @@
 
             Array.from(slots).forEach((slot, index) => {
                 if (index < itemsList.length) {
-                    const name = itemsList[index];
+                    const key = itemsList[index];
+                    const item = itemsDB[key];
+                    const displayName = currentLang === "fr" ? item.fr : item.en;
+
                     slot.classList.add('added');
                     slot.innerHTML = `
-                        <div class="name">${name}</div>
-                        <div class="price">${itemsDB[name].toLocaleString()} ₽</div>
+                        <div class="name">${displayName}</div>
+                        <div class="price">${item.price.toLocaleString()} ₽</div>
                     `;
                     slot.onclick = () => removeItem(side, index);
                 } else {
@@ -305,8 +310,8 @@
         }
 
         function updateTotals() {
-            const leftTotal = leftItems.reduce((sum, name) => sum + itemsDB[name], 0);
-            const rightTotal = rightItems.reduce((sum, name) => sum + itemsDB[name], 0);
+            const leftTotal = leftItems.reduce((sum, key) => sum + itemsDB[key].price, 0);
+            const rightTotal = rightItems.reduce((sum, key) => sum + itemsDB[key].price, 0);
 
             document.getElementById('leftTotal').textContent = leftTotal.toLocaleString();
             document.getElementById('rightTotal').textContent = rightTotal.toLocaleString();
@@ -315,21 +320,17 @@
             const res = document.getElementById('result');
             if (diff > 50000) res.textContent = "🟢 EXCELLENT WIN";
             else if (diff > 10000) res.textContent = "🟢 WIN";
-            else if (diff < -50000) res.textContent = "🔴 BIG LOSS";
+            else if (diff < -50000) res.textContent = "🔴 GROS LOSS";
             else if (diff < -10000) res.textContent = "🔴 LOSS";
             else res.textContent = translations[currentLang].fair;
         }
 
         document.getElementById('modalSearch').addEventListener('input', (e) => renderModalItems(e.target.value));
-
-        // Changement de langue
-        document.getElementById('languageSelect').addEventListener('change', (e) => {
-            changeLanguage(e.target.value);
-        });
+        document.getElementById('languageSelect').addEventListener('change', (e) => changeLanguage(e.target.value));
 
         // Démarrage
         createSlots();
-        changeLanguage("fr"); // langue par défaut
+        changeLanguage("fr");
     </script>
 </body>
 </html>
