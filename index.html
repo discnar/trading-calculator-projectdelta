@@ -10,113 +10,83 @@
             background: #0f0f0f;
             color: #fff;
             font-family: 'Segoe UI', Arial, sans-serif;
+            padding: 20px;
+        }
+        h1 {
             text-align: center;
-            padding: 20px;
-        }
-        header {
-            margin-bottom: 25px;
-        }
-        header h1 {
-            font-size: 28px;
-            margin-bottom: 8px;
-        }
-        .subtitle {
-            color: #00ccff;
-            font-size: 16px;
-        }
-
-        .main {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
-
-        .panel {
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 16px;
-            width: 380px;
-            padding: 20px;
-        }
-
-        .panel h2 {
-            margin-bottom: 15px;
-            font-size: 22px;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            background: #111;
-            padding: 10px;
-            border-radius: 12px;
             margin-bottom: 20px;
+            font-size: 28px;
         }
-        .stat {
+        .search {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: #1f1f1f;
+            color: white;
+            font-size: 17px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 12px;
             text-align: center;
+            transition: 0.2s;
+            cursor: pointer;
+            border: 1px solid #333;
         }
-        .stat small {
-            display: block;
-            font-size: 12px;
-            color: #888;
+        .card:hover {
+            transform: scale(1.05);
+            border-color: #00ccff;
+            box-shadow: 0 0 15px rgba(0, 204, 255, 0.3);
         }
-        .stat span {
-            font-size: 20px;
+        .card img {
+            width: 80px;
+            height: 80px;
+            background: #333;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            object-fit: contain;
+        }
+        .card h3 {
+            font-size: 14px;
+            margin: 6px 0;
+        }
+        .card .price {
+            color: #ffcc00;
             font-weight: bold;
         }
-
-        .slots {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        .slot {
-            background: #222;
-            border: 2px dashed #444;
-            border-radius: 12px;
-            height: 110px;
+        .offers {
             display: flex;
-            align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
         }
-        .slot:hover {
-            border-color: #00ccff;
-            background: #2a2a2a;
-        }
-        .slot.added {
-            border-style: solid;
-            border-color: #00ccff;
-            background: #1f2a1f;
-        }
-
-        .center {
-            margin-top: 80px;
-        }
-        .center-box {
-            background: #2a2a00;
-            border: 2px solid #ffaa00;
+        .panel {
+            background: #1a1a1a;
             border-radius: 16px;
-            padding: 20px 30px;
-            width: 280px;
+            padding: 20px;
+            width: 380px;
         }
-        .center-box h3 {
-            color: #ffaa00;
-            margin-bottom: 10px;
+        .added {
+            background: #1f2a1f;
+            border: 2px solid #00ccff;
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 10px;
         }
-        button.reset {
-            background: #ff3333;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 15px;
-        }
-
         #result {
+            text-align: center;
             font-size: 32px;
             margin: 30px 0;
             font-weight: bold;
@@ -125,127 +95,126 @@
 </head>
 <body>
 
-    <header>
-        <h1>PROJECT DELTA TRADE CALCULATOR</h1>
-        <p class="subtitle">Calcule tes trades rapidement et échange en toute confiance !</p>
-    </header>
+    <h1>PROJECT DELTA TRADE CALCULATOR</h1>
+    <input type="text" class="search" id="search" placeholder="Rechercher un item... (ex: GPU, EDF Flare, M4A1)">
 
-    <div class="main">
+    <div class="grid" id="itemGrid"></div>
 
-        <!-- Votre Offre -->
+    <div class="offers">
         <div class="panel">
             <h2>Votre offre</h2>
-            <div class="stats">
-                <div class="stat"><small>VALEUR</small><span id="leftValue">0</span></div>
-                <div class="stat"><small>PRIX</small><span id="leftPrice">0</span></div>
-                <div class="stat"><small>DEMANDE</small><span id="leftDemand" style="color:#ff4444;">0/10</span></div>
-            </div>
-            <div class="slots" id="leftSlots"></div>
+            <div id="leftOffer"></div>
+            <h3>Total : <span id="leftTotal">0</span> ₽</h3>
         </div>
 
-        <!-- Centre -->
-        <div class="center">
-            <div class="center-box">
-                <h3>Commerce équitable</h3>
-                <button class="reset" onclick="resetAll()">🔄 Réinitialiser</button>
-            </div>
-        </div>
-
-        <!-- Leur Offre -->
         <div class="panel">
             <h2>Leur offre</h2>
-            <div class="stats">
-                <div class="stat"><small>VALEUR</small><span id="rightValue">0</span></div>
-                <div class="stat"><small>PRIX</small><span id="rightPrice">0</span></div>
-                <div class="stat"><small>DEMANDE</small><span id="rightDemand" style="color:#ff4444;">0/10</span></div>
-            </div>
-            <div class="slots" id="rightSlots"></div>
+            <div id="rightOffer"></div>
+            <h3>Total : <span id="rightTotal">0</span> ₽</h3>
         </div>
-
     </div>
 
     <div id="result">⚖️ FAIR TRADE</div>
 
     <script>
-        const itemsDB = { /* Même base de données que précédemment */ 
-            "Duct Tape": 420, "Metal Bolts": 102, "Metal Nuts": 96, "Super Glue": 660,
-            "GPU": 15000, "CPU": 4800, "SSD": 2400, "RAM": 1080,
-            "50g Gold": 17100, "Gold Watch": 15000, "EDF Flare": 375000,
-            "Cassette": 375000, "TFZ98S": 550000, "R700": 500000, "AS-VAL": 110000,
-            "M4A1": 70000, "God FAST MT": 950000, "HSPV": 375000
-            // ... tu peux ajouter tous les autres items ici
+        const itemsDB = {
+            "Duct Tape": {price: 420, img: "📦"},
+            "Super Glue": {price: 660, img: "🧪"},
+            "GPU": {price: 15000, img: "💻"},
+            "CPU": {price: 4800, img: "🔧"},
+            "SSD": {price: 2400, img: "💾"},
+            "50g Gold": {price: 17100, img: "🪙"},
+            "Gold Watch": {price: 15000, img: "⌚"},
+            "EDF Flare": {price: 375000, img: "🚀"},
+            "Cassette": {price: 375000, img: "📼"},
+            "TFZ98S": {price: 550000, img: "🔫"},
+            "R700": {price: 500000, img: "🔫"},
+            "AS-VAL": {price: 110000, img: "🔫"},
+            "M4A1": {price: 70000, img: "🔫"},
+            "God FAST MT": {price: 950000, img: "🛡️"},
+            "HSPV": {price: 375000, img: "🛡️"},
+            "Quad NVG": {price: 65000, img: "👓"}
         };
 
-        let leftItems = [], rightItems = [];
+        let leftItems = [];
+        let rightItems = [];
 
-        function createSlots(containerId, side) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            for (let i = 0; i < 4; i++) {
-                const slot = document.createElement('div');
-                slot.className = 'slot';
-                slot.innerHTML = `<span style="color:#666; font-size:40px;">+</span>`;
-                slot.onclick = () => openItemSelector(side, slot);
-                container.appendChild(slot);
-            }
+        const grid = document.getElementById('itemGrid');
+        const searchInput = document.getElementById('search');
+
+        function renderGrid(filter = "") {
+            grid.innerHTML = "";
+
+            Object.keys(itemsDB).forEach(name => {
+                if (!name.toLowerCase().includes(filter.toLowerCase())) return;
+
+                const data = itemsDB[name];
+                const card = document.createElement('div');
+                card.className = "card";
+                card.innerHTML = `
+                    <div style="font-size:50px;">${data.img}</div>
+                    <h3>${name}</h3>
+                    <div class="price">${data.price.toLocaleString()} ₽</div>
+                `;
+                card.onclick = () => addItem(name);
+                grid.appendChild(card);
+            });
         }
 
-        function openItemSelector(side, slotElement) {
-            const search = prompt("Rechercher un item (ex: GPU, EDF Flare, M4A1) :");
-            if (!search) return;
+        function addItem(name) {
+            const side = confirm("Ajouter à Votre offre ? (OK = Votre offre | Annuler = Leur offre)") ? 'left' : 'right';
 
-            const filtered = Object.keys(itemsDB).filter(name => 
-                name.toLowerCase().includes(search.toLowerCase())
-            );
-
-            if (filtered.length === 0) {
-                alert("Item non trouvé");
-                return;
+            if (side === 'left') {
+                leftItems.push(name);
+                renderAdded('leftOffer', leftItems);
+            } else {
+                rightItems.push(name);
+                renderAdded('rightOffer', rightItems);
             }
-
-            const chosen = prompt("Choisis un item :\n" + filtered.join("\n"));
-            if (!chosen || !itemsDB[chosen]) return;
-
-            slotElement.classList.add('added');
-            slotElement.innerHTML = `<small>${chosen}<br><b>${itemsDB[chosen].toLocaleString()} ₽</b></small>`;
-            slotElement.onclick = null;
-
-            if (side === 'left') leftItems.push(chosen);
-            else rightItems.push(chosen);
-
             updateTotals();
         }
 
-        function updateTotals() {
-            const leftTotal = leftItems.reduce((a, b) => a + (itemsDB[b] || 0), 0);
-            const rightTotal = rightItems.reduce((a, b) => a + (itemsDB[b] || 0), 0);
+        function renderAdded(containerId, list) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+            list.forEach((name, index) => {
+                const div = document.createElement('div');
+                div.className = "added";
+                div.innerHTML = `${name} — ${itemsDB[name].price.toLocaleString()} ₽ 
+                    <button onclick="removeItem('${containerId}', ${index})" style="color:red;">×</button>`;
+                container.appendChild(div);
+            });
+        }
 
-            document.getElementById('leftValue').textContent = leftTotal.toLocaleString();
-            document.getElementById('rightValue').textContent = rightTotal.toLocaleString();
+        window.removeItem = function(containerId, index) {
+            if (containerId === 'leftOffer') leftItems.splice(index, 1);
+            else rightItems.splice(index, 1);
+            renderAdded(containerId, containerId === 'leftOffer' ? leftItems : rightItems);
+            updateTotals();
+        };
+
+        function updateTotals() {
+            const leftTotal = leftItems.reduce((sum, name) => sum + itemsDB[name].price, 0);
+            const rightTotal = rightItems.reduce((sum, name) => sum + itemsDB[name].price, 0);
+
+            document.getElementById('leftTotal').textContent = leftTotal.toLocaleString();
+            document.getElementById('rightTotal').textContent = rightTotal.toLocaleString();
 
             const diff = rightTotal - leftTotal;
-            const result = document.getElementById('result');
+            const resultEl = document.getElementById('result');
 
-            if (diff > 50000) result.innerHTML = "🟢 EXCELLENT WIN";
-            else if (diff > 10000) result.innerHTML = "🟢 WIN";
-            else if (diff < -50000) result.innerHTML = "🔴 BIG LOSS";
-            else if (diff < -10000) result.innerHTML = "🔴 LOSS";
-            else result.innerHTML = "⚖️ FAIR TRADE";
+            if (diff > 50000) resultEl.textContent = "🟢 EXCELLENT WIN";
+            else if (diff > 10000) resultEl.textContent = "🟢 WIN";
+            else if (diff < -50000) resultEl.textContent = "🔴 BIG LOSS";
+            else if (diff < -10000) resultEl.textContent = "🔴 LOSS";
+            else resultEl.textContent = "⚖️ FAIR TRADE";
         }
 
-        function resetAll() {
-            if (confirm("Réinitialiser tout ?")) {
-                leftItems = [];
-                rightItems = [];
-                createSlots('leftSlots', 'left');
-                createSlots('rightSlots', 'right');
-                updateTotals();
-            }
-        }
+        // Recherche en temps réel
+        searchInput.addEventListener('input', () => renderGrid(searchInput.value));
 
-        // Initialisation
-        createSlots('leftSlots', 'left');
-        createSlots('rightSlots', 'right');
+        // Affichage initial
+        renderGrid();
     </script>
 
 </body>
