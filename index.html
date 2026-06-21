@@ -251,10 +251,16 @@
             if (diff > 600) {
                 resultEl.textContent = "🟢 WIN";
                 resultEl.style.color = "#2ecc71";
-            } else if (diff < -600) {
+            } 
+            else if (diff < -1000) {
                 resultEl.textContent = "🔴 LOSS";
                 resultEl.style.color = "#e74c3c";
-            } else {
+            } 
+            else if (diff < -600) {
+                resultEl.textContent = "🔴 LOW LOSS";
+                resultEl.style.color = "#f39c12";   // orange
+            } 
+            else {
                 resultEl.textContent = "⚖️ FAIR TRADE";
                 resultEl.style.color = "#f1c40f";
             }
