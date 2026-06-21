@@ -51,7 +51,6 @@
         .slot .name { font-weight: bold; }
         .slot .price { color: #ffcc00; font-size: 12px; }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -103,7 +102,6 @@
             margin: 30px 0;
             font-weight: bold;
         }
-
         .language-bar {
             position: fixed;
             bottom: 15px;
@@ -164,25 +162,62 @@
 
     <script>
         const itemsDB = {
-            "Duct Tape": {en: "Duct Tape", fr: "Ruban Adhésif", price: 420},
-            "Metal Bolts": {en: "Metal Bolts", fr: "Boulons", price: 102},
-            "Metal Nuts": {en: "Metal Nuts", fr: "Écrous", price: 96},
-            "Super Glue": {en: "Super Glue", fr: "Super Colle", price: 660},
-            "GPU": {en: "GPU", fr: "Carte Graphique", price: 15000},
-            "CPU": {en: "CPU", fr: "Processeur", price: 4800},
-            "SSD": {en: "SSD", fr: "SSD", price: 2400},
-            "50g Gold": {en: "50g Gold", fr: "50g d'Or", price: 17100},
-            "Gold Watch": {en: "Gold Watch", fr: "Montre en Or", price: 15000},
-            "EDF Flare": {en: "EDF Flare", fr: "Fusée EDF", price: 375000},
-            "Cassette": {en: "Cassette", fr: "Cassette", price: 375000},
-            "Fast MT": {en: "Fast MT", fr: "Fast MT", price: 20000},
-            "Altyn": {en: "Altyn", fr: "Altyn", price: 22500},
-            "Quad NVG": {en: "Quad NVG", fr: "NVG Quad", price: 65000},
-            "TFZ98S": {en: "TFZ98S", fr: "TFZ98S", price: 550000},
-            "R700": {en: "R700", fr: "R700", price: 500000},
-            "AS-VAL": {en: "AS-VAL", fr: "AS-VAL", price: 110000},
-            "M4A1": {en: "M4A1", fr: "M4A1", price: 70000},
-            "God FAST MT": {en: "God FAST MT", fr: "God FAST MT", price: 950000}
+            "Duct Tape": {fr: "Ruban Adhésif", price: 420},
+            "Metal Bolts": {fr: "Boulons Métal", price: 102},
+            "Metal Nuts": {fr: "Écrous Métal", price: 96},
+            "Metal Nails": {fr: "Clous Métal", price: 90},
+            "Super Glue": {fr: "Super Colle", price: 660},
+            "Cotton": {fr: "Coton", price: 300},
+            "Ripstop": {fr: "Ripstop", price: 720},
+            "Aramid": {fr: "Aramide", price: 1020},
+            "Linen": {fr: "Lin", price: 1200},
+            "Gunpowder": {fr: "Poudre à Canon", price: 360},
+            "Steel Pipe": {fr: "Tuyau Acier", price: 420},
+            "Metal": {fr: "Métal", price: 270},
+            "Wooden Planks": {fr: "Planches de Bois", price: 174},
+            "Motor Oil": {fr: "Huile Moteur", price: 1080},
+            "Fuze": {fr: "Détonateur", price: 210},
+            "Weapon Part": {fr: "Pièce d'Arme", price: 1200},
+            "Copper Coil": {fr: "Bobine de Cuivre", price: 390},
+            "AA Battery": {fr: "Pile AA", price: 450},
+            "Smartphone": {fr: "Smartphone", price: 6000},
+            "GPU": {fr: "Carte Graphique", price: 15000},
+            "SSD": {fr: "SSD", price: 2400},
+            "RAM": {fr: "RAM", price: 1080},
+            "CPU": {fr: "Processeur", price: 4800},
+            "CPU Fan": {fr: "Ventilateur CPU", price: 480},
+            "PSU": {fr: "Alimentation", price: 3000},
+            "PH2 Screwdriver": {fr: "Tournevis PH2", price: 600},
+            "Flathead Screwdriver": {fr: "Tournevis Plat", price: 630},
+            "Wrench": {fr: "Clé à Molette", price: 360},
+            "Hammer": {fr: "Marteau", price: 600},
+            "50g Gold": {fr: "50g d'Or", price: 17100},
+            "Statue of Solter": {fr: "Statue de Solter", price: 5940},
+            "SPS": {fr: "SPS", price: 24000},
+            "Gold Watch": {fr: "Montre en Or", price: 15000},
+            "Gold Tix": {fr: "Gold Tix", price: 7200},
+            "Anton Plushie": {fr: "Peluche Anton", price: 15000},
+            "EDF Flare": {fr: "Fusée EDF", price: 375000},
+            "Cassette": {fr: "Cassette", price: 375000},
+            "Repair Kit": {fr: "Kit de Réparation", price: 15000},
+            "Fast MT": {fr: "Fast MT", price: 20000},
+            "Altyn": {fr: "Altyn", price: 22500},
+            "Quad NVG": {fr: "NVG Quad", price: 65000},
+            "TFZ98S": {fr: "TFZ98S", price: 550000},
+            "R700": {fr: "R700", price: 500000},
+            "AS-VAL": {fr: "AS-VAL", price: 110000},
+            "M4A1": {fr: "M4A1", price: 70000},
+            "MK12": {fr: "MK12", price: 70000},
+            "MK23": {fr: "MK23", price: 15000},
+            "SVD": {fr: "SVD", price: 15000},
+            "RPG": {fr: "RPG", price: 27500},
+            "Saiga": {fr: "Saiga", price: 15000},
+            "MP5SD": {fr: "MP5SD", price: 5000},
+            "AKMN": {fr: "AKMN", price: 9000},
+            "God M4A1": {fr: "God M4A1", price: 525000},
+            "God FAST MT": {fr: "God FAST MT", price: 950000},
+            "HSPV": {fr: "HSPV", price: 375000},
+            "M4A1 Drum Mag": {fr: "M4A1 Drum Mag", price: 275000}
         };
 
         let leftItems = [], rightItems = [];
@@ -190,22 +225,8 @@
         let currentLang = "fr";
 
         const translations = {
-            fr: {
-                title: "PROJECT DELTA TRADE CALCULATOR",
-                leftTitle: "TU DONNES",
-                rightTitle: "ILS DONNENT",
-                modalTitle: "Rechercher un item",
-                searchPlaceholder: "Tape le nom de l'item...",
-                fair: "⚖️ ÉCHANGE ÉQUITABLE"
-            },
-            en: {
-                title: "PROJECT DELTA TRADE CALCULATOR",
-                leftTitle: "YOU GIVE",
-                rightTitle: "THEY GIVE",
-                modalTitle: "Search an item",
-                searchPlaceholder: "Type item name...",
-                fair: "⚖️ FAIR TRADE"
-            }
+            fr: { title: "PROJECT DELTA TRADE CALCULATOR", leftTitle: "TU DONNES", rightTitle: "ILS DONNENT", modalTitle: "Rechercher un item", searchPlaceholder: "Tape le nom de l'item...", fair: "⚖️ ÉCHANGE ÉQUITABLE" },
+            en: { title: "PROJECT DELTA TRADE CALCULATOR", leftTitle: "YOU GIVE", rightTitle: "THEY GIVE", modalTitle: "Search an item", searchPlaceholder: "Type item name...", fair: "⚖️ FAIR TRADE" }
         };
 
         function changeLanguage(lang) {
@@ -253,8 +274,7 @@
 
             Object.keys(itemsDB).forEach(key => {
                 const item = itemsDB[key];
-                const displayName = currentLang === "fr" ? item.fr : item.en;
-
+                const displayName = item.fr || key;
                 if (!displayName.toLowerCase().includes(filter.toLowerCase())) return;
 
                 const card = document.createElement('div');
@@ -286,13 +306,9 @@
                 if (index < itemsList.length) {
                     const key = itemsList[index];
                     const item = itemsDB[key];
-                    const displayName = currentLang === "fr" ? item.fr : item.en;
-
+                    const displayName = item.fr || key;
                     slot.classList.add('added');
-                    slot.innerHTML = `
-                        <div class="name">${displayName}</div>
-                        <div class="price">${item.price.toLocaleString()} ₽</div>
-                    `;
+                    slot.innerHTML = `<div class="name">${displayName}</div><div class="price">${item.price.toLocaleString()} ₽</div>`;
                     slot.onclick = () => removeItem(side, index);
                 } else {
                     slot.classList.remove('added');
@@ -318,6 +334,7 @@
 
             const diff = rightTotal - leftTotal;
             const res = document.getElementById('result');
+
             if (diff > 50000) res.textContent = "🟢 EXCELLENT WIN";
             else if (diff > 10000) res.textContent = "🟢 WIN";
             else if (diff < -50000) res.textContent = "🔴 GROS LOSS";
@@ -328,7 +345,6 @@
         document.getElementById('modalSearch').addEventListener('input', (e) => renderModalItems(e.target.value));
         document.getElementById('languageSelect').addEventListener('change', (e) => changeLanguage(e.target.value));
 
-        // Démarrage
         createSlots();
         changeLanguage("fr");
     </script>
