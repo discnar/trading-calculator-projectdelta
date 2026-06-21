@@ -1,0 +1,76 @@
+{
+  "Materials": {
+    "Duct Tape": 420,
+    "Metal Bolts": 102,
+    "Metal Nuts": 96,
+    "Metal Nails": 90,
+    "Super Glue": 660,
+    "Cotton": 300,
+    "Ripstop": 720,
+    "Aramid": 1020,
+    "Linen": 1200,
+    "Gunpowder": 360,
+    "Steel Pipe": 420,
+    "Metal": 270,
+    "Wooden Planks": 174
+  },
+
+  "Components": {
+    "Motor Oil": 1080,
+    "Fuze": 210,
+    "Weapon Part": 1200
+  },
+
+  "Electronics": {
+    "Copper Coil": 390,
+    "AA Battery": 450,
+    "Smartphone": 6000,
+    "GPU": 15000,
+    "SSD": 2400,
+    "RAM": 1080,
+    "CPU": 4800,
+    "CPU Fan": 480,
+    "PSU": 3000
+  },
+
+  "Tools": {
+    "PH2 Screwdriver": 600,
+    "Flathead Screwdriver": 630,
+    "Wrench": 360,
+    "Hammer": 600
+  },
+
+  "Valuables": {
+    "50g Gold": 17100,
+    "Statue of Solter": 5940,
+    "SPS": 24000,
+    "Gold Watch": 15000,
+    "Gold Tix": 7200,
+    "Anton Plushie": 15000,
+    "EDF Flare": 375000,
+    "Cassette": 375000,
+    "Repair Kit": 15000,
+    "Fast MT": 20000,
+    "Altyn": 22500,
+    "Quad NVG": 65000
+  },
+
+  "Weapons": {
+    "TFZ98S": 550000,
+    "R700": 500000,
+    "AS-VAL": 110000,
+    "M4A1": 70000,
+    "MK12": 70000,
+    "MK23": 15000,
+    "SVD": 15000,
+    "RPG": 27500,
+    "Saiga": 15000,
+    "MP5SD": 5000,
+    "AKMN": 9000,
+
+    "God M4A1": 525000,
+    "God FAST MT": 950000,
+    "HSPV": 375000,
+    "M4A1 Drum Mag": 275000
+  }
+}
