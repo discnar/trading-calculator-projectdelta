@@ -1,0 +1,73 @@
+body{
+    margin:0;
+    font-family:Arial;
+    background:#0f0f0f;
+    color:white;
+}
+
+/* TOP BAR */
+.topbar{
+    background:#1c1c1c;
+    padding:15px;
+    text-align:center;
+    font-weight:bold;
+}
+
+/* SEARCH */
+.searchbar{
+    text-align:center;
+    margin:15px;
+}
+
+.searchbar input{
+    width:60%;
+    padding:10px;
+    border:none;
+    border-radius:6px;
+    outline:none;
+}
+
+/* CONTAINER */
+.container{
+    display:flex;
+    justify-content:space-around;
+    margin-top:20px;
+}
+
+.panel{
+    width:45%;
+    background:#1a1a1a;
+    padding:15px;
+    border-radius:10px;
+}
+
+/* ITEM CARD */
+.item{
+    background:#262626;
+    padding:10px;
+    margin:8px 0;
+    border-radius:8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+button{
+    background:#3a3a3a;
+    color:white;
+    border:none;
+    padding:5px 10px;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+button:hover{
+    background:#555;
+}
+
+/* RESULT */
+#result{
+    text-align:center;
+    font-size:28px;
+    margin-top:20px;
+}
