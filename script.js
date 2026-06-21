@@ -2,6 +2,7 @@ let items = {};
 let leftItems = [];
 let rightItems = [];
 
+// LOAD JSON
 fetch("items.json")
 .then(r => r.json())
 .then(data => {
@@ -9,13 +10,14 @@ fetch("items.json")
     renderAll();
 });
 
-// SEARCH
+// SEARCH EVENT
 document.addEventListener("input", (e)=>{
     if(e.target.id === "search"){
         renderAll(e.target.value.toLowerCase());
     }
 });
 
+// GET ALL ITEMS
 function getAllItems(){
     let list = [];
 
@@ -28,10 +30,14 @@ function getAllItems(){
     return list;
 }
 
+// RENDER ITEMS (IMPORTANT FIX)
 function renderAll(filter=""){
 
-    document.getElementById("left").innerHTML = "";
-    document.getElementById("right").innerHTML = "";
+    let left = document.getElementById("left");
+    let right = document.getElementById("right");
+
+    left.innerHTML = "";
+    right.innerHTML = "";
 
     let all = getAllItems();
 
@@ -44,13 +50,17 @@ function renderAll(filter=""){
     }
 }
 
+// GET PRICE
 function getPrice(name){
     for(let cat in items){
-        if(items[cat][name]) return items[cat][name];
+        if(items[cat][name]){
+            return items[cat][name];
+        }
     }
     return 0;
 }
 
+// CREATE CARD (FIX BUTTON)
 function createCard(name, side){
 
     let price = getPrice(name);
@@ -59,21 +69,26 @@ function createCard(name, side){
     div.className = "item";
 
     div.innerHTML = `
-        <span>${name} - ${price.toLocaleString()} ₽</span>
-        <button onclick="addItem('${name}','${side}')">+</button>
+        <span>${name} — ${price.toLocaleString()} ₽</span>
+        <button onclick="addItem('${name}','${side}')">Ajouter</button>
     `;
 
     document.getElementById(side).appendChild(div);
 }
 
+// ADD ITEM
 function addItem(name, side){
 
-    if(side === "left") leftItems.push(name);
-    else rightItems.push(name);
+    if(side === "left"){
+        leftItems.push(name);
+    } else {
+        rightItems.push(name);
+    }
 
     update();
 }
 
+// CALC TOTAL
 function calc(list){
     let total = 0;
 
@@ -84,6 +99,7 @@ function calc(list){
     return total;
 }
 
+// UPDATE UI
 function update(){
 
     let left = calc(leftItems);
