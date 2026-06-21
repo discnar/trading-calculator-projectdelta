@@ -174,61 +174,54 @@
 
     <script>
         const itemsDB = {
-            // Loot & Barter
+            // Loot
             "Duct Tape": 420, "Metal Bolts": 102, "Metal Nuts": 96, "Metal Nails": 90,
             "Super Glue": 660, "Cotton": 300, "Ripstop": 720, "Aramid": 1020,
             "Linen": 1200, "Gunpowder": 360, "Steel Pipe": 420, "Metal": 270,
             "Wooden Planks": 174, "Motor Oil": 1080, "Fuze": 210, "Weapon Part": 1200,
-            "Copper Coil": 390, "AA Battery": 450, "Smartphone": 6000,
-            "GPU": 15000, "SSD": 2400, "RAM": 1080, "CPU": 4800,
-            "CPU Fan": 480, "PSU": 3000,
 
-            // Tools
-            "PH2 Screwdriver": 600, "Flathead Screwdriver": 630, "Wrench": 360, "Hammer": 600,
+            // Weapons Standard
+            "ADAR 2-15": "8000-15000", "AKMN": 10000, "MP5SD": "5000-10000",
+            "Saiga 12": "10000-20000", "M4A1": 60000, "MK12": 70000,
+            "AS Val": 110000, "SVD": "7500-15000", "PKM": 22500, "RPG": 30000,
+            "TFZ98S": "500000-600000", "R700": 500000,
 
-            // Valuables
-            "50g Gold": 17100, "Statue of Solter": 5940, "SPS": 24000,
-            "Gold Watch": 15000, "Gold Tix": 7200, "Anton Plushie": 15000,
+            // God Versions
+            "God M4A1": 550000, "God AKMN": "35000-45000", "God Saiga": 35000,
+            "God TFZ98S": "500000-600000", "God Fast MT": 950000,
 
-            // Equipment
-            "EDF Flare": 375000, "Cassette": 375000, "Repair Kit": 15000,
-            "Fast MT": 20000, "Altyn": 22500, "Quad NVG": 65000,
-            "Fast MT Helmet": 20000, "Altyn Helmet": 22500, "Fast MT Visor": 75000,
-            "TOR-S Helmet": 10000, "HSPV": 375000, "IOTV Gen4": 125000,
-            "JPC Rush": 70000, "IOLA": 10000,
+            // Magazines
+            "M4 Drum": 275000, "AKMN Drum": 7500, "Saiga Drum": "10000-15000",
 
-            // Clothing
-            "Gorka Shirt": 3000, "Gorka Pants": 3000,
-            "Ghillie Shirt": 2000, "Ghillie Pants": 2000, "Ghillie Hood": 1500,
-            "Balaclava": 2000, "GP-5 Gas Mask": 2500,
-
-            // Backpacks
-            "10L Lynx": 2000, "30L Backpack": 4000, "45L Tortilla": 5000, "60L Raid": 12000,
-
-            // Weapons
-            "TFZ98S": 550000, "R700": 500000, "AS-VAL": 110000,
-            "M4A1": 70000, "MK12": 70000, "God M4A1": 550000,
-            "MK23": 15000, "God MK23": 35000,
-            "SVD": 15000, "God SVD": 15000,
-            "AKMN": 10000, "God AKMN": 40000,
-            "Saiga": 15000, "MP5SD": 5000, "PKM": 22500, "RPG": 30000,
+            // Armures
+            "Fast MT Helmet": 20000, "Fast MT God": 950000, "Altyn": 22500,
+            "T-Shield": 750000, "HSPV": 375000, "IOTV Gen4": 125000,
+            "JPC Rush": 70000,
 
             // Attachments
-            "SOCOM556": 250000, "M4A1 Drum Mag": 275000,
-            "ACOG": 22500, "REAP-IR": 95000,
+            "SOCOM556": 250000, "ACOG": 22500, "REAP-IR": 95000,
+            "Sniper Scope": 75000, "RK3": 7500, "PT1": 7500,
 
-            // Medicals & Others
-            "AI-4": 7500, "AI-2": 2000, "Survival Kit": 3000,
-            "BO5 Key": 12500, "Frigate Key": 15000, "ATC Key": 8000
+            // Others
+            "EDF Flare": "350000-400000", "Cassette Player": 375000,
+            "Repair Kit": 15000, "Gorka Pants": 3000, "Gorka Shirt": 3000
         };
 
         let leftItems = [], rightItems = [];
 
+        function getPrice(value) {
+            if (typeof value === 'number') return value;
+            if (typeof value === 'string' && value.includes('-')) {
+                const [min, max] = value.split('-').map(v => parseInt(v.replace(/[^0-9]/g, '')));
+                return Math.round((min + max) / 2);
+            }
+            return parseInt(value) || 0;
+        }
+
         function createSlots() {
             const left = document.getElementById('leftSlots');
             const right = document.getElementById('rightSlots');
-            left.innerHTML = '';
-            right.innerHTML = '';
+            left.innerHTML = ''; right.innerHTML = '';
             for (let i = 0; i < 6; i++) {
                 left.appendChild(createSlot('left'));
                 right.appendChild(createSlot('right'));
@@ -259,9 +252,10 @@
             container.innerHTML = "";
             Object.keys(itemsDB).sort().forEach(name => {
                 if (!name.toLowerCase().includes(filter.toLowerCase())) return;
+                const price = getPrice(itemsDB[name]);
                 const card = document.createElement('div');
                 card.className = "modal-card";
-                card.innerHTML = `<strong>${name}</strong><br><small>${itemsDB[name].toLocaleString()} $</small>`;
+                card.innerHTML = `<strong>${name}</strong><br><small>${price.toLocaleString()} $</small>`;
                 card.onclick = () => addItem(name);
                 container.appendChild(card);
             });
@@ -287,8 +281,9 @@
             Array.from(slots).forEach((slot, index) => {
                 if (index < itemsList.length) {
                     const name = itemsList[index];
+                    const price = getPrice(itemsDB[name]);
                     slot.classList.add('added');
-                    slot.innerHTML = `<div class="name">${name}</div><div class="price">${itemsDB[name].toLocaleString()} $</div>`;
+                    slot.innerHTML = `<div class="name">${name}</div><div class="price">${price.toLocaleString()} $</div>`;
                     slot.onclick = () => removeItem(side, index);
                 } else {
                     slot.classList.remove('added');
@@ -306,8 +301,8 @@
         }
 
         function updateResult() {
-            const leftTotal = leftItems.reduce((sum, name) => sum + itemsDB[name], 0);
-            const rightTotal = rightItems.reduce((sum, name) => sum + itemsDB[name], 0);
+            const leftTotal = leftItems.reduce((sum, name) => sum + getPrice(itemsDB[name]), 0);
+            const rightTotal = rightItems.reduce((sum, name) => sum + getPrice(itemsDB[name]), 0);
 
             document.getElementById('leftTotal').textContent = leftTotal.toLocaleString();
             document.getElementById('rightTotal').textContent = rightTotal.toLocaleString();
@@ -349,7 +344,6 @@
 
         document.getElementById('modalSearch').addEventListener('input', (e) => renderModalItems(e.target.value));
 
-        // Démarrage
         createSlots();
         updateResult();
     </script>
