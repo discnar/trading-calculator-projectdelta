@@ -11,6 +11,8 @@
             color: #fff;
             font-family: 'Segoe UI', Arial, sans-serif;
             padding: 20px;
+            position: relative;
+            min-height: 100vh;
         }
         .header { text-align: center; margin-bottom: 25px; font-size: 26px; font-weight: bold; }
         .main { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
@@ -100,21 +102,43 @@
             margin: 30px 0;
             font-weight: bold;
         }
+
+        /* Menu Langue en bas */
+        .language-bar {
+            position: fixed;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a;
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1px solid #333;
+            z-index: 2000;
+        }
+        .language-bar select {
+            background: #222;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 15px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">PROJECT DELTA TRADE CALCULATOR</div>
+    <div class="header" id="title">PROJECT DELTA TRADE CALCULATOR</div>
 
     <div class="main">
         <div class="panel">
-            <h2>TU DONNES</h2>
+            <h2 id="leftTitle">TU DONNES</h2>
             <div class="slots" id="leftSlots"></div>
             <h3 style="text-align:center; margin-top:15px;">Total : <span id="leftTotal">0</span> ₽</h3>
         </div>
 
         <div class="panel">
-            <h2>ILS DONNENT</h2>
+            <h2 id="rightTitle">ILS DONNENT</h2>
             <div class="slots" id="rightSlots"></div>
             <h3 style="text-align:center; margin-top:15px;">Total : <span id="rightTotal">0</span> ₽</h3>
         </div>
@@ -125,13 +149,40 @@
     <!-- MODAL -->
     <div class="modal" id="modal">
         <div class="modal-content">
-            <h2 style="margin-bottom:15px;">Rechercher un item</h2>
+            <h2 id="modalTitle" style="margin-bottom:15px;">Rechercher un item</h2>
             <input type="text" class="modal-search" id="modalSearch" placeholder="Tape le nom de l'item...">
             <div class="modal-grid" id="modalGrid"></div>
         </div>
     </div>
 
+    <!-- MENU LANGUE -->
+    <div class="language-bar">
+        <select id="languageSelect">
+            <option value="fr">🇫🇷 Français</option>
+            <option value="en">🇬🇧 English</option>
+        </select>
+    </div>
+
     <script>
+        const translations = {
+            fr: {
+                title: "PROJECT DELTA TRADE CALCULATOR",
+                leftTitle: "TU DONNES",
+                rightTitle: "ILS DONNENT",
+                modalTitle: "Rechercher un item",
+                searchPlaceholder: "Tape le nom de l'item...",
+                fair: "⚖️ FAIR TRADE"
+            },
+            en: {
+                title: "PROJECT DELTA TRADE CALCULATOR",
+                leftTitle: "YOU GIVE",
+                rightTitle: "THEY GIVE",
+                modalTitle: "Search an item",
+                searchPlaceholder: "Type item name...",
+                fair: "⚖️ FAIR TRADE"
+            }
+        };
+
         const itemsDB = {
             "Duct Tape": 420, "Metal Bolts": 102, "Metal Nuts": 96, "Metal Nails": 90,
             "Super Glue": 660, "Cotton": 300, "Ripstop": 720, "Aramid": 1020,
@@ -154,6 +205,19 @@
 
         let leftItems = [], rightItems = [];
         let currentSide = null;
+        let currentLang = "fr";
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('title').textContent = translations[lang].title;
+            document.getElementById('leftTitle').textContent = translations[lang].leftTitle;
+            document.getElementById('rightTitle').textContent = translations[lang].rightTitle;
+            document.getElementById('modalTitle').textContent = translations[lang].modalTitle;
+            document.getElementById('modalSearch').placeholder = translations[lang].searchPlaceholder;
+            updateTotals(); // refresh result text
+        }
+
+        // ... (le reste du code reste identique)
 
         function createSlots() {
             const left = document.getElementById('leftSlots');
@@ -216,7 +280,6 @@
             const container = document.getElementById(containerId);
             const slots = container.children;
 
-            // Réinitialiser tous les slots
             Array.from(slots).forEach((slot, index) => {
                 if (index < itemsList.length) {
                     const name = itemsList[index];
@@ -254,12 +317,19 @@
             else if (diff > 10000) res.textContent = "🟢 WIN";
             else if (diff < -50000) res.textContent = "🔴 BIG LOSS";
             else if (diff < -10000) res.textContent = "🔴 LOSS";
-            else res.textContent = "⚖️ FAIR TRADE";
+            else res.textContent = translations[currentLang].fair;
         }
 
         document.getElementById('modalSearch').addEventListener('input', (e) => renderModalItems(e.target.value));
 
+        // Changement de langue
+        document.getElementById('languageSelect').addEventListener('change', (e) => {
+            changeLanguage(e.target.value);
+        });
+
+        // Démarrage
         createSlots();
+        changeLanguage("fr"); // langue par défaut
     </script>
 </body>
 </html>
