@@ -1,73 +1,144 @@
 body{
     margin:0;
-    font-family:Arial;
-    background:#0f0f0f;
+    font-family:Arial, sans-serif;
+    background:#0b0b0b;
     color:white;
 }
 
 /* TOP BAR */
 .topbar{
-    background:#1c1c1c;
-    padding:15px;
+    background:linear-gradient(90deg,#1c1c1c,#111);
+    padding:20px;
     text-align:center;
     font-weight:bold;
+    border-bottom:1px solid #2a2a2a;
+}
+
+.topbar h1{
+    margin:0;
+    font-size:20px;
+    letter-spacing:1px;
 }
 
 /* SEARCH */
 .searchbar{
     text-align:center;
-    margin:15px;
+    margin-top:15px;
 }
 
 .searchbar input{
-    width:60%;
-    padding:10px;
+    width:50%;
+    padding:12px;
     border:none;
-    border-radius:6px;
+    border-radius:10px;
     outline:none;
+    background:#1f1f1f;
+    color:white;
+    box-shadow:0 0 10px rgba(0,0,0,0.4);
 }
 
 /* CONTAINER */
 .container{
     display:flex;
     justify-content:space-around;
-    margin-top:20px;
+    margin-top:25px;
+    gap:20px;
+    padding:0 20px;
 }
 
+/* PANELS */
 .panel{
     width:45%;
-    background:#1a1a1a;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.08);
     padding:15px;
-    border-radius:10px;
+    border-radius:15px;
+    backdrop-filter: blur(8px);
+    box-shadow:0 0 20px rgba(0,0,0,0.5);
 }
 
-/* ITEM CARD */
+.panel h2{
+    text-align:center;
+    margin-bottom:15px;
+    color:#ddd;
+}
+
+/* ITEM CARD (STYLE PRO) */
 .item{
-    background:#262626;
-    padding:10px;
-    margin:8px 0;
-    border-radius:8px;
+    background:#171717;
+    padding:12px;
+    margin:10px 0;
+    border-radius:12px;
     display:flex;
     justify-content:space-between;
     align-items:center;
+    border:1px solid rgba(255,255,255,0.05);
+    transition:0.2s;
 }
 
+.item:hover{
+    transform:scale(1.02);
+    border-color:rgba(255,255,255,0.2);
+    box-shadow:0 0 10px rgba(255,255,255,0.05);
+}
+
+/* BUTTON */
 button{
-    background:#3a3a3a;
+    background:#2e2e2e;
     color:white;
     border:none;
-    padding:5px 10px;
+    padding:6px 12px;
     cursor:pointer;
-    border-radius:5px;
+    border-radius:8px;
+    transition:0.2s;
 }
 
 button:hover{
-    background:#555;
+    background:#444;
+    transform:scale(1.05);
 }
 
-/* RESULT */
+/* TOTAL */
+h3{
+    text-align:center;
+    margin-top:15px;
+    color:#bbb;
+}
+
+/* RESULT WIN / LOSS */
 #result{
     text-align:center;
-    font-size:28px;
-    margin-top:20px;
+    font-size:32px;
+    margin-top:30px;
+    font-weight:bold;
+    letter-spacing:1px;
+}
+
+/* COLORS (optionnel si tu veux JS plus tard) */
+.win{
+    color:#2ecc71;
+}
+
+.loss{
+    color:#e74c3c;
+}
+
+.fair{
+    color:#f1c40f;
+}
+
+/* MOBILE */
+@media (max-width:900px){
+    .container{
+        flex-direction:column;
+        align-items:center;
+    }
+
+    .panel{
+        width:90%;
+    }
+
+    .searchbar input{
+        width:80%;
+    }
 }
