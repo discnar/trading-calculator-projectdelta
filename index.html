@@ -12,29 +12,15 @@
             font-family: 'Segoe UI', Arial, sans-serif;
             padding: 20px;
         }
-        .header {
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 26px;
-            font-weight: bold;
-        }
-        .main {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            flex-wrap: wrap;
-        }
+        .header { text-align: center; margin-bottom: 25px; font-size: 26px; font-weight: bold; }
+        .main { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
         .panel {
             background: #1a1a1a;
             border-radius: 16px;
             padding: 20px;
             width: 420px;
         }
-        .panel h2 {
-            color: #ff4444;
-            margin-bottom: 15px;
-            text-align: center;
-        }
+        .panel h2 { color: #ff4444; margin-bottom: 15px; text-align: center; }
         .slots {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -51,22 +37,19 @@
             justify-content: center;
             cursor: pointer;
             transition: 0.2s;
+            padding: 5px;
+            text-align: center;
         }
-        .slot:hover {
-            border-color: #00ccff;
-            background: #2a2a2a;
-        }
+        .slot:hover { border-color: #00ccff; background: #2a2a2a; }
         .slot.added {
             border-style: solid;
             border-color: #00ccff;
             background: #1f2a1f;
         }
-        .slot span {
-            font-size: 35px;
-            margin-bottom: 5px;
-        }
+        .slot .name { font-size: 13px; font-weight: bold; }
+        .slot .price { font-size: 12px; color: #ffcc00; }
 
-        /* Modal de recherche */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -106,7 +89,6 @@
             border-radius: 12px;
             text-align: center;
             cursor: pointer;
-            transition: 0.2s;
         }
         .modal-card:hover {
             background: #00ccff;
@@ -126,7 +108,6 @@
     <div class="header">PROJECT DELTA TRADE CALCULATOR</div>
 
     <div class="main">
-
         <!-- TU DONNES -->
         <div class="panel">
             <h2>TU DONNES</h2>
@@ -140,7 +121,6 @@
             <div class="slots" id="rightSlots"></div>
             <h3 style="text-align:center; margin-top:15px;">Total : <span id="rightTotal">0</span> ₽</h3>
         </div>
-
     </div>
 
     <div class="result" id="result">⚖️ FAIR TRADE</div>
@@ -156,24 +136,23 @@
 
     <script>
         const itemsDB = {
-            "Duct Tape": {price: 420, emoji: "📦"},
-            "Super Glue": {price: 660, emoji: "🧪"},
-            "GPU": {price: 15000, emoji: "💻"},
-            "CPU": {price: 4800, emoji: "🔧"},
-            "SSD": {price: 2400, emoji: "💾"},
-            "50g Gold": {price: 17100, emoji: "🪙"},
-            "Gold Watch": {price: 15000, emoji: "⌚"},
-            "EDF Flare": {price: 375000, emoji: "🚀"},
-            "Cassette": {price: 375000, emoji: "📼"},
-            "TFZ98S": {price: 550000, emoji: "🔫"},
-            "R700": {price: 500000, emoji: "🔫"},
-            "AS-VAL": {price: 110000, emoji: "🔫"},
-            "M4A1": {price: 70000, emoji: "🔫"},
-            "God FAST MT": {price: 950000, emoji: "🛡️"},
-            "HSPV": {price: 375000, emoji: "🛡️"},
-            "Quad NVG": {price: 65000, emoji: "👓"},
-            "Fast MT": {price: 20000, emoji: "🪖"},
-            "Altyn": {price: 22500, emoji: "🪖"}
+            "Duct Tape": 420, "Metal Bolts": 102, "Metal Nuts": 96, "Metal Nails": 90,
+            "Super Glue": 660, "Cotton": 300, "Ripstop": 720, "Aramid": 1020,
+            "Linen": 1200, "Gunpowder": 360, "Steel Pipe": 420, "Metal": 270,
+            "Wooden Planks": 174, "Motor Oil": 1080, "Fuze": 210, "Weapon Part": 1200,
+            "Copper Coil": 390, "AA Battery": 450, "Smartphone": 6000,
+            "GPU": 15000, "SSD": 2400, "RAM": 1080, "CPU": 4800,
+            "CPU Fan": 480, "PSU": 3000,
+            "50g Gold": 17100, "Statue of Solter": 5940, "SPS": 24000,
+            "Gold Watch": 15000, "Gold Tix": 7200, "Anton Plushie": 15000,
+            "EDF Flare": 375000, "Cassette": 375000, "Repair Kit": 15000,
+            "Fast MT": 20000, "Altyn": 22500, "Quad NVG": 65000,
+            "TFZ98S": 550000, "R700": 500000, "AS-VAL": 110000,
+            "M4A1": 70000, "MK12": 70000, "MK23": 15000,
+            "SVD": 15000, "RPG": 27500, "Saiga": 15000,
+            "MP5SD": 5000, "AKMN": 9000,
+            "God M4A1": 525000, "God FAST MT": 950000,
+            "HSPV": 375000, "M4A1 Drum Mag": 275000
         };
 
         let leftItems = [], rightItems = [];
@@ -182,27 +161,24 @@
         function createSlots() {
             const left = document.getElementById('leftSlots');
             const right = document.getElementById('rightSlots');
-            
             for (let i = 0; i < 6; i++) {
-                const slotL = createSlot('left');
-                const slotR = createSlot('right');
-                left.appendChild(slotL);
-                right.appendChild(slotR);
+                left.appendChild(createSlot('left'));
+                right.appendChild(createSlot('right'));
             }
         }
 
         function createSlot(side) {
             const slot = document.createElement('div');
             slot.className = 'slot';
-            slot.innerHTML = `<span>+</span><small>Ajouter un élément</small>`;
-            slot.onclick = () => openSearchModal(side);
+            slot.innerHTML = `<span style="font-size:35px;">+</span><small>Ajouter un élément</small>`;
+            slot.onclick = () => openModal(side);
             return slot;
         }
 
-        function openSearchModal(side) {
+        function openModal(side) {
             currentSide = side;
             document.getElementById('modal').style.display = 'flex';
-            document.getElementById('modalSearch').focus();
+            document.getElementById('modalSearch').value = "";
             renderModalItems("");
         }
 
@@ -217,18 +193,11 @@
             Object.keys(itemsDB).forEach(name => {
                 if (!name.toLowerCase().includes(filter.toLowerCase())) return;
 
-                const item = itemsDB[name];
+                const price = itemsDB[name];
                 const card = document.createElement('div');
                 card.className = "modal-card";
-                card.innerHTML = `
-                    <div style="font-size:45px;">${item.emoji}</div>
-                    <strong>${name}</strong><br>
-                    <small>${item.price.toLocaleString()} ₽</small>
-                `;
-                card.onclick = () => {
-                    addItem(name);
-                    closeModal();
-                };
+                card.innerHTML = `<strong>${name}</strong><br><small>${price.toLocaleString()} ₽</small>`;
+                card.onclick = () => { addItem(name); closeModal(); };
                 container.appendChild(card);
             });
         }
@@ -236,25 +205,37 @@
         function addItem(name) {
             if (currentSide === 'left') leftItems.push(name);
             else rightItems.push(name);
-            renderAddedItems();
+            renderAllSlots();
             updateTotals();
         }
 
-        function renderAddedItems() {
-            // On peut améliorer ça plus tard pour remplacer les slots
-            console.log("Ajouté :", leftItems, rightItems);
+        function renderAllSlots() {
+            renderSide('leftSlots', leftItems);
+            renderSide('rightSlots', rightItems);
+        }
+
+        function renderSide(containerId, itemsList) {
+            const container = document.getElementById(containerId);
+            const slots = container.children;
+            slots.forEach((slot, index) => {
+                if (index < itemsList.length) {
+                    const name = itemsList[index];
+                    slot.classList.add('added');
+                    slot.innerHTML = `<div class="name">${name}</div><div class="price">${itemsDB[name].toLocaleString()} ₽</div>`;
+                    slot.onclick = null;
+                }
+            });
         }
 
         function updateTotals() {
-            const leftTotal = leftItems.reduce((sum, n) => sum + itemsDB[n].price, 0);
-            const rightTotal = rightItems.reduce((sum, n) => sum + itemsDB[n].price, 0);
+            const leftTotal = leftItems.reduce((sum, name) => sum + itemsDB[name], 0);
+            const rightTotal = rightItems.reduce((sum, name) => sum + itemsDB[name], 0);
 
             document.getElementById('leftTotal').textContent = leftTotal.toLocaleString();
             document.getElementById('rightTotal').textContent = rightTotal.toLocaleString();
 
             const diff = rightTotal - leftTotal;
             const res = document.getElementById('result');
-
             if (diff > 50000) res.textContent = "🟢 EXCELLENT WIN";
             else if (diff > 10000) res.textContent = "🟢 WIN";
             else if (diff < -50000) res.textContent = "🔴 BIG LOSS";
@@ -262,12 +243,10 @@
             else res.textContent = "⚖️ FAIR TRADE";
         }
 
-        // Recherche dans le modal
-        document.getElementById('modalSearch').addEventListener('input', (e) => {
-            renderModalItems(e.target.value);
-        });
+        // Recherche dans modal
+        document.getElementById('modalSearch').addEventListener('input', (e) => renderModalItems(e.target.value));
 
-        // Initialisation
+        // Démarrage
         createSlots();
     </script>
 </body>
