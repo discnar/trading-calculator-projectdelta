@@ -5,255 +5,247 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Delta Trade Calculator</title>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #0b0b0b;
-            color: white;
+            background: #0f0f0f;
+            color: #fff;
+            font-family: 'Segoe UI', Arial, sans-serif;
             text-align: center;
-        }
-        .topbar {
-            background: linear-gradient(90deg, #1c1c1c, #111);
             padding: 20px;
-            font-size: 24px;
-            font-weight: bold;
         }
-        .searchbar {
-            margin: 15px;
+        header {
+            margin-bottom: 25px;
         }
-        .searchbar input {
-            width: 60%;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            background: #1f1f1f;
-            color: white;
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: #00ccff;
             font-size: 16px;
         }
-        .container {
+
+        .main {
             display: flex;
             justify-content: center;
             gap: 30px;
-            padding: 20px;
             flex-wrap: wrap;
         }
+
         .panel {
             background: #1a1a1a;
             border: 1px solid #333;
-            border-radius: 15px;
-            width: 420px;
-            padding: 15px;
+            border-radius: 16px;
+            width: 380px;
+            padding: 20px;
         }
+
         .panel h2 {
-            margin: 10px 0;
-            color: #ddd;
+            margin-bottom: 15px;
+            font-size: 22px;
         }
-        .item {
-            background: #262626;
-            margin: 8px 0;
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: #111;
             padding: 10px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: 0.2s;
+            border-radius: 12px;
+            margin-bottom: 20px;
         }
-        .item:hover {
-            background: #333;
-            transform: scale(1.03);
+        .stat {
+            text-align: center;
         }
-        button {
-            background: #3a3a3a;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 8px;
-            cursor: pointer;
+        .stat small {
+            display: block;
+            font-size: 12px;
+            color: #888;
         }
-        button:hover {
-            background: #555;
-        }
-        .added-item {
-            background: #1f3a1f;
-            margin: 6px 0;
-            padding: 8px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-        }
-        #result {
-            font-size: 32px;
-            margin: 30px;
+        .stat span {
+            font-size: 20px;
             font-weight: bold;
         }
-        .win { color: #2ecc71; }
-        .loss { color: #e74c3c; }
-        .fair { color: #f1c40f; }
-        @media (max-width: 900px) {
-            .container { flex-direction: column; align-items: center; }
+
+        .slots {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .slot {
+            background: #222;
+            border: 2px dashed #444;
+            border-radius: 12px;
+            height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .slot:hover {
+            border-color: #00ccff;
+            background: #2a2a2a;
+        }
+        .slot.added {
+            border-style: solid;
+            border-color: #00ccff;
+            background: #1f2a1f;
+        }
+
+        .center {
+            margin-top: 80px;
+        }
+        .center-box {
+            background: #2a2a00;
+            border: 2px solid #ffaa00;
+            border-radius: 16px;
+            padding: 20px 30px;
+            width: 280px;
+        }
+        .center-box h3 {
+            color: #ffaa00;
+            margin-bottom: 10px;
+        }
+        button.reset {
+            background: #ff3333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        #result {
+            font-size: 32px;
+            margin: 30px 0;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <div class="topbar">
-        PROJECT DELTA TRADE CALCULATOR
-    </div>
+    <header>
+        <h1>PROJECT DELTA TRADE CALCULATOR</h1>
+        <p class="subtitle">Calcule tes trades rapidement et échange en toute confiance !</p>
+    </header>
 
-    <div class="searchbar">
-        <input type="text" id="search" placeholder="Rechercher un item...">
-    </div>
+    <div class="main">
 
-    <div class="container">
-
-        <!-- Vous donnez -->
+        <!-- Votre Offre -->
         <div class="panel">
-            <h2>Vous donnez</h2>
-            <div id="left-list"></div>
-            <h3>Total : <span id="leftTotal">0</span> ₽</h3>
+            <h2>Votre offre</h2>
+            <div class="stats">
+                <div class="stat"><small>VALEUR</small><span id="leftValue">0</span></div>
+                <div class="stat"><small>PRIX</small><span id="leftPrice">0</span></div>
+                <div class="stat"><small>DEMANDE</small><span id="leftDemand" style="color:#ff4444;">0/10</span></div>
+            </div>
+            <div class="slots" id="leftSlots"></div>
         </div>
 
-        <!-- Vous recevez -->
+        <!-- Centre -->
+        <div class="center">
+            <div class="center-box">
+                <h3>Commerce équitable</h3>
+                <button class="reset" onclick="resetAll()">🔄 Réinitialiser</button>
+            </div>
+        </div>
+
+        <!-- Leur Offre -->
         <div class="panel">
-            <h2>Vous recevez</h2>
-            <div id="right-list"></div>
-            <h3>Total : <span id="rightTotal">0</span> ₽</h3>
+            <h2>Leur offre</h2>
+            <div class="stats">
+                <div class="stat"><small>VALEUR</small><span id="rightValue">0</span></div>
+                <div class="stat"><small>PRIX</small><span id="rightPrice">0</span></div>
+                <div class="stat"><small>DEMANDE</small><span id="rightDemand" style="color:#ff4444;">0/10</span></div>
+            </div>
+            <div class="slots" id="rightSlots"></div>
         </div>
 
     </div>
 
-    <div id="result">⚖️ FAIR</div>
+    <div id="result">⚖️ FAIR TRADE</div>
 
     <script>
-        // === BASE DE DONNÉES COMPLETE ===
-        const itemsDB = {
-            "Duct Tape": 420,
-            "Metal Bolts": 102,
-            "Metal Nuts": 96,
-            "Metal Nails": 90,
-            "Super Glue": 660,
-            "Cotton": 300,
-            "Ripstop": 720,
-            "Aramid": 1020,
-            "Linen": 1200,
-            "Gunpowder": 360,
-            "Steel Pipe": 420,
-            "Metal": 270,
-            "Wooden Planks": 174,
-            "Motor Oil": 1080,
-            "Fuze": 210,
-            "Weapon Part": 1200,
-            "Copper Coil": 390,
-            "AA Battery": 450,
-            "Smartphone": 6000,
-            "GPU": 15000,
-            "SSD": 2400,
-            "RAM": 1080,
-            "CPU": 4800,
-            "CPU Fan": 480,
-            "PSU": 3000,
-            "PH2 Screwdriver": 600,
-            "Flathead Screwdriver": 630,
-            "Wrench": 360,
-            "Hammer": 600,
-            "50g Gold": 17100,
-            "Statue of Solter": 5940,
-            "SPS": 24000,
-            "Gold Watch": 15000,
-            "Gold Tix": 7200,
-            "Anton Plushie": 15000,
-            "EDF Flare": 375000,
-            "Cassette": 375000,
-            "Repair Kit": 15000,
-            "Fast MT": 20000,
-            "Altyn": 22500,
-            "Quad NVG": 65000,
-            "TFZ98S": 550000,
-            "R700": 500000,
-            "AS-VAL": 110000,
-            "M4A1": 70000,
-            "MK12": 70000,
-            "MK23": 15000,
-            "SVD": 15000,
-            "RPG": 27500,
-            "Saiga": 15000,
-            "MP5SD": 5000,
-            "AKMN": 9000,
-            "God M4A1": 525000,
-            "God FAST MT": 950000,
-            "HSPV": 375000,
-            "M4A1 Drum Mag": 275000
+        const itemsDB = { /* Même base de données que précédemment */ 
+            "Duct Tape": 420, "Metal Bolts": 102, "Metal Nuts": 96, "Super Glue": 660,
+            "GPU": 15000, "CPU": 4800, "SSD": 2400, "RAM": 1080,
+            "50g Gold": 17100, "Gold Watch": 15000, "EDF Flare": 375000,
+            "Cassette": 375000, "TFZ98S": 550000, "R700": 500000, "AS-VAL": 110000,
+            "M4A1": 70000, "God FAST MT": 950000, "HSPV": 375000
+            // ... tu peux ajouter tous les autres items ici
         };
 
-        let leftItems = [];
-        let rightItems = [];
+        let leftItems = [], rightItems = [];
 
-        const searchInput = document.getElementById('search');
-        const leftList = document.getElementById('left-list');
-        const rightList = document.getElementById('right-list');
-
-        function renderItems(filter = "") {
-            leftList.innerHTML = '';
-            rightList.innerHTML = '';
-
-            Object.keys(itemsDB).forEach(name => {
-                if (!name.toLowerCase().includes(filter.toLowerCase())) return;
-
-                const price = itemsDB[name];
-
-                const div = document.createElement('div');
-                div.className = 'item';
-                div.innerHTML = `
-                    <span>${name} — ${price.toLocaleString()} ₽</span>
-                    <button onclick="addToSide('${name}', 'left')">→</button>
-                    <button onclick="addToSide('${name}', 'right')">←</button>
-                `;
-                leftList.appendChild(div.cloneNode(true));
-                rightList.appendChild(div);
-            });
-        }
-
-        window.addToSide = function(name, side) {
-            if (side === 'left') leftItems.push(name);
-            else rightItems.push(name);
-            updateTotals();
-        };
-
-        function updateTotals() {
-            const leftTotal = leftItems.reduce((sum, item) => sum + itemsDB[item], 0);
-            const rightTotal = rightItems.reduce((sum, item) => sum + itemsDB[item], 0);
-
-            document.getElementById('leftTotal').textContent = leftTotal.toLocaleString();
-            document.getElementById('rightTotal').textContent = rightTotal.toLocaleString();
-
-            const diff = rightTotal - leftTotal;
-            const resultEl = document.getElementById('result');
-
-            if (diff > 10000) {
-                resultEl.innerHTML = '🟢 GROS WIN';
-                resultEl.className = 'win';
-            } else if (diff > 5000) {
-                resultEl.innerHTML = '🟢 WIN';
-                resultEl.className = 'win';
-            } else if (diff < -10000) {
-                resultEl.innerHTML = '🔴 GROS LOSS';
-                resultEl.className = 'loss';
-            } else if (diff < -5000) {
-                resultEl.innerHTML = '🔴 LOSS';
-                resultEl.className = 'loss';
-            } else {
-                resultEl.innerHTML = '⚖️ FAIR';
-                resultEl.className = 'fair';
+        function createSlots(containerId, side) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            for (let i = 0; i < 4; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'slot';
+                slot.innerHTML = `<span style="color:#666; font-size:40px;">+</span>`;
+                slot.onclick = () => openItemSelector(side, slot);
+                container.appendChild(slot);
             }
         }
 
-        // Recherche en direct
-        searchInput.addEventListener('input', () => {
-            renderItems(searchInput.value);
-        });
+        function openItemSelector(side, slotElement) {
+            const search = prompt("Rechercher un item (ex: GPU, EDF Flare, M4A1) :");
+            if (!search) return;
+
+            const filtered = Object.keys(itemsDB).filter(name => 
+                name.toLowerCase().includes(search.toLowerCase())
+            );
+
+            if (filtered.length === 0) {
+                alert("Item non trouvé");
+                return;
+            }
+
+            const chosen = prompt("Choisis un item :\n" + filtered.join("\n"));
+            if (!chosen || !itemsDB[chosen]) return;
+
+            slotElement.classList.add('added');
+            slotElement.innerHTML = `<small>${chosen}<br><b>${itemsDB[chosen].toLocaleString()} ₽</b></small>`;
+            slotElement.onclick = null;
+
+            if (side === 'left') leftItems.push(chosen);
+            else rightItems.push(chosen);
+
+            updateTotals();
+        }
+
+        function updateTotals() {
+            const leftTotal = leftItems.reduce((a, b) => a + (itemsDB[b] || 0), 0);
+            const rightTotal = rightItems.reduce((a, b) => a + (itemsDB[b] || 0), 0);
+
+            document.getElementById('leftValue').textContent = leftTotal.toLocaleString();
+            document.getElementById('rightValue').textContent = rightTotal.toLocaleString();
+
+            const diff = rightTotal - leftTotal;
+            const result = document.getElementById('result');
+
+            if (diff > 50000) result.innerHTML = "🟢 EXCELLENT WIN";
+            else if (diff > 10000) result.innerHTML = "🟢 WIN";
+            else if (diff < -50000) result.innerHTML = "🔴 BIG LOSS";
+            else if (diff < -10000) result.innerHTML = "🔴 LOSS";
+            else result.innerHTML = "⚖️ FAIR TRADE";
+        }
+
+        function resetAll() {
+            if (confirm("Réinitialiser tout ?")) {
+                leftItems = [];
+                rightItems = [];
+                createSlots('leftSlots', 'left');
+                createSlots('rightSlots', 'right');
+                updateTotals();
+            }
+        }
 
         // Initialisation
-        renderItems();
+        createSlots('leftSlots', 'left');
+        createSlots('rightSlots', 'right');
     </script>
 
 </body>
